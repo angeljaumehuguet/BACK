@@ -38,25 +38,22 @@ try {
         INNER JOIN usuarios u ON r.id_usuario = u.id
         INNER JOIN peliculas p ON r.id_pelicula = p.id
         INNER JOIN generos g ON p.genero_id = g.id
-        LEFT JOIN likes_resenas lr ON r.id = lr.id_resena AND lr.id_usuario = :user_id_like
-        LEFT JOIN favoritos f ON p.id = f.id_pelicula AND f.id_usuario = :user_id_fav";
-    
-    $params = [
-    ':user_id_like' => $userId,
-    ':user_id_fav' => $userId,
-    ':user_id' => $userId // Para usarlo en filtros como 'mis_resenas'
-    ];
+        LEFT JOIN likes_resenas lr ON r.id = lr.id_resena AND lr.id_usuario = ?
+        LEFT JOIN favoritos f ON p.id = f.id_pelicula AND f.id_usuario = ?";
     
     // condiciones base
     $conditions = ["r.activo = true", "u.activo = true", "p.activo = true"];
+    $bindParams = [$userId, $userId];
     
     // filtro por tipo de feed
     switch ($tipo) {
         case 'siguiendo':
-            $sql .= " INNER JOIN seguimientos s ON r.id_usuario = s.id_seguido AND s.id_seguidor = :user_id AND s.activo = true";
+            $sql .= " INNER JOIN seguimientos s ON r.id_usuario = s.id_seguido AND s.id_seguidor = ? AND s.activo = true";
+            $bindParams[] = $userId;
             break;
         case 'mis_resenas':
-            $conditions[] = "r.id_usuario = :user_id";
+            $conditions[] = "r.id_usuario = ?";
+            $bindParams[] = $userId;
             break;
         case 'recientes':
             $conditions[] = "r.fecha_resena >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
@@ -66,8 +63,8 @@ try {
     
     // filtro por género
     if ($genero) {
-        $conditions[] = "p.genero_id = :genero";
-        $params[':genero'] = $genero;
+        $conditions[] = "p.genero_id = ?";
+        $bindParams[] = $genero;
     }
     
     // agregar condiciones
@@ -77,28 +74,53 @@ try {
     
     $sql .= " ORDER BY r.fecha_resena DESC";
     
-    $fromPosition = stripos($sql, ' FROM ');
-    $fromAndWherePart = substr($sql, $fromPosition);
-
-    $fromAndWherePart = preg_replace('/ORDER BY.*$/', '', $fromAndWherePart);
-
-    // creamos la consulta de conteo final
-    $countSql = "SELECT COUNT(DISTINCT r.id) as total" . $fromAndWherePart;
+    // consulta de conteo
+    $countSql = "SELECT COUNT(DISTINCT r.id) as total
+        FROM resenas r
+        INNER JOIN usuarios u ON r.id_usuario = u.id
+        INNER JOIN peliculas p ON r.id_pelicula = p.id
+        INNER JOIN generos g ON p.genero_id = g.id";
     
+    // agregar joins específicos para el conteo según el tipo
+    $countBindParams = [];
+    switch ($tipo) {
+        case 'siguiendo':
+            $countSql .= " INNER JOIN seguimientos s ON r.id_usuario = s.id_seguido AND s.id_seguidor = ? AND s.activo = true";
+            $countBindParams[] = $userId;
+            break;
+    }
+    
+    // agregar condiciones al conteo
+    $countConditions = ["r.activo = true", "u.activo = true", "p.activo = true"];
+    
+    if ($tipo === 'mis_resenas') {
+        $countConditions[] = "r.id_usuario = ?";
+        $countBindParams[] = $userId;
+    } elseif ($tipo === 'recientes') {
+        $countConditions[] = "r.fecha_resena >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
+    }
+    
+    if ($genero) {
+        $countConditions[] = "p.genero_id = ?";
+        $countBindParams[] = $genero;
+    }
+    
+    if (!empty($countConditions)) {
+        $countSql .= " WHERE " . implode(' AND ', $countConditions);
+    }
+    
+    // ejecutar consulta de conteo
     $countStmt = $conn->prepare($countSql);
-    $countStmt->execute($params);
-
-    die("DEBUG C: execute() para el conteo se ejecutó sin error.");
-
+    $countStmt->execute($countBindParams);
     $totalElementos = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
     
-    // obtener datos paginados
-    $sql .= " LIMIT :limite OFFSET :offset";
-    $params[':limite'] = $limite;
-    $params[':offset'] = $offset;
+    // agregar paginación a consulta principal
+    $sql .= " LIMIT ? OFFSET ?";
+    $bindParams[] = $limite;
+    $bindParams[] = $offset;
     
     $stmt = $conn->prepare($sql);
-    $stmt->execute($params);
+    $stmt->execute($bindParams);
     $resenas = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     // formatear datos

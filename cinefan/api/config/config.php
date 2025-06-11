@@ -3,6 +3,7 @@
 define('APP_NAME', 'CineFan API');
 define('APP_VERSION', '1.0.0');
 define('API_VERSION', 'v1');
+define('DEBUG_SQL', true);
 
 // configuración de jwt
 define('JWT_SECRET', 'cinefan_secret_key_2025_super_secure');

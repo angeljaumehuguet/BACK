@@ -30,13 +30,16 @@ try {
                    r.fecha_resena, r.likes, r.es_spoiler,
                    p.id as pelicula_id, p.titulo as pelicula_titulo, p.director, 
                    p.ano_lanzamiento, p.imagen_url as pelicula_imagen,
-                   g.nombre as genero, g.color_hex as color_genero
+                   g.nombre as genero, g.color_hex as color_genero,
+                   CASE WHEN lr.id IS NOT NULL THEN 1 ELSE 0 END as usuario_dio_like
             FROM resenas r
             INNER JOIN peliculas p ON r.id_pelicula = p.id
             INNER JOIN generos g ON p.genero_id = g.id
-            WHERE r.id_usuario = :user_id AND r.activo = true AND p.activo = true";
+            LEFT JOIN likes_resenas lr ON r.id = lr.id_resena AND lr.id_usuario = ?
+            WHERE r.id_usuario = ? AND r.activo = true AND p.activo = true";
     
-    $params = [':user_id' => $usuario];
+    // inicializar parámetros
+    $bindParams = [$userId, $usuario];
     
     // ordenamiento
     switch ($ordenar) {
@@ -63,32 +66,53 @@ try {
             break;
     }
     
-    // contar total de registros
+    // construir consulta de conteo
     $countSql = "SELECT COUNT(*) as total FROM resenas r 
                INNER JOIN peliculas p ON r.id_pelicula = p.id
-               WHERE r.id_usuario = :user_id AND r.activo = true AND p.activo = true";
+               WHERE r.id_usuario = ? AND r.activo = true AND p.activo = true";
     
+    // preparar parámetros para el conteo
+    $countParams = [$usuario];
+    
+    // ejecutar consulta de conteo
     $countStmt = $conn->prepare($countSql);
-    $countStmt->execute($params);
+    $countStmt->execute($countParams);
     $totalElementos = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
     
-    // obtener datos paginados
-    $sql .= " LIMIT :limite OFFSET :offset";
-    $params[':limite'] = $limite;
-    $params[':offset'] = $offset;
+    // agregar paginación a consulta principal
+    $sql .= " LIMIT ? OFFSET ?";
+    $bindParams[] = $limite;
+    $bindParams[] = $offset;
     
     $stmt = $conn->prepare($sql);
-    $stmt->execute($params);
+    $stmt->execute($bindParams);
     $resenas = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     // formatear datos
     foreach ($resenas as &$resena) {
         $resena['fecha_formateada'] = Utils::timeAgo($resena['fecha_resena']);
         $resena['es_spoiler'] = (bool)$resena['es_spoiler'];
+        $resena['usuario_dio_like'] = (bool)$resena['usuario_dio_like'];
         $resena['es_propietario'] = ($usuario === $userId);
         $resena['texto_preview'] = strlen($resena['texto_resena']) > 150 
             ? substr($resena['texto_resena'], 0, 150) . '...' 
             : $resena['texto_resena'];
+        
+        // información de la película
+        $resena['pelicula'] = [
+            'id' => (int)$resena['pelicula_id'],
+            'titulo' => $resena['pelicula_titulo'],
+            'director' => $resena['director'],
+            'ano_lanzamiento' => (int)$resena['ano_lanzamiento'],
+            'imagen_url' => $resena['pelicula_imagen'],
+            'genero' => $resena['genero'],
+            'color_genero' => $resena['color_genero']
+        ];
+        
+        // limpiar campos duplicados
+        unset($resena['pelicula_id'], $resena['pelicula_titulo'], $resena['director'], 
+              $resena['ano_lanzamiento'], $resena['pelicula_imagen'], $resena['genero'], 
+              $resena['color_genero']);
     }
     
     Response::paginated($resenas, $pagina, $totalElementos, $limite, 'Reseñas obtenidas exitosamente');

@@ -19,7 +19,7 @@ try {
     $pagina = isset($_GET['pagina']) ? max(1, (int)$_GET['pagina']) : 1;
     $limite = isset($_GET['limite']) ? min(50, max(1, (int)$_GET['limite'])) : DEFAULT_PAGE_SIZE;
     $genero = isset($_GET['genero']) ? (int)$_GET['genero'] : null;
-    $busqueda = isset($_GET['busqueda']) ? Response::sanitizeInput($_GET['busqueda']) : null;
+    $busqueda = isset($_GET['busqueda']) ? trim($_GET['busqueda']) : null;
     $ordenar = isset($_GET['ordenar']) ? $_GET['ordenar'] : 'fecha_desc';
     
     $offset = ($pagina - 1) * $limite;
@@ -35,35 +35,41 @@ try {
                    COALESCE(AVG(r.puntuacion), 0) as puntuacion_promedio,
                    COUNT(DISTINCT r.id) as total_resenas,
                    COUNT(DISTINCT f.id) as total_favoritos,
-                   MAX(CASE WHEN f.id_usuario = :user_id THEN 1 ELSE 0 END) as es_favorita,
-                   MAX(CASE WHEN r.id_usuario = :user_id THEN r.id ELSE NULL END) as resena_usuario_id
+                   MAX(CASE WHEN f_user.id_usuario = ? THEN 1 ELSE 0 END) as es_favorita,
+                   MAX(CASE WHEN r_user.id_usuario = ? THEN r_user.id ELSE NULL END) as resena_usuario_id
             FROM peliculas p
             INNER JOIN generos g ON p.genero_id = g.id
             INNER JOIN usuarios u ON p.id_usuario_creador = u.id
             LEFT JOIN resenas r ON p.id = r.id_pelicula AND r.activo = true
             LEFT JOIN favoritos f ON p.id = f.id_pelicula
+            LEFT JOIN favoritos f_user ON p.id = f_user.id_pelicula AND f_user.id_usuario = ?
+            LEFT JOIN resenas r_user ON p.id = r_user.id_pelicula AND r_user.id_usuario = ?
             WHERE p.activo = true AND u.activo = true";
     
-    $params = [':user_id' => $userId];
+    // inicializar parámetros
+    $bindParams = [$userId, $userId, $userId, $userId];
     
     // filtro por usuario creador
     if ($usuario !== $userId) {
-        $sql .= " AND p.id_usuario_creador = :creador";
-        $params[':creador'] = $usuario;
+        $sql .= " AND p.id_usuario_creador = ?";
+        $bindParams[] = $usuario;
     } else {
-        $sql .= " AND p.id_usuario_creador = :user_id";
+        $sql .= " AND p.id_usuario_creador = ?";
+        $bindParams[] = $userId;
     }
     
     // filtro por género
     if ($genero) {
-        $sql .= " AND p.genero_id = :genero";
-        $params[':genero'] = $genero;
+        $sql .= " AND p.genero_id = ?";
+        $bindParams[] = $genero;
     }
     
     // filtro de búsqueda
     if ($busqueda) {
-        $sql .= " AND (p.titulo LIKE :busqueda OR p.director LIKE :busqueda)";
-        $params[':busqueda'] = "%{$busqueda}%";
+        $sql .= " AND (p.titulo LIKE ? OR p.director LIKE ?)";
+        $searchTerm = "%{$busqueda}%";
+        $bindParams[] = $searchTerm;
+        $bindParams[] = $searchTerm;
     }
     
     $sql .= " GROUP BY p.id";
@@ -96,37 +102,46 @@ try {
             break;
     }
     
-    // contar total de registros
+    // construir consulta de conteo
     $countSql = "SELECT COUNT(DISTINCT p.id) as total 
                  FROM peliculas p 
                  INNER JOIN usuarios u ON p.id_usuario_creador = u.id 
                  WHERE p.activo = true AND u.activo = true";
     
+    // preparar parámetros para el conteo
+    $countParams = [];
+    
     if ($usuario !== $userId) {
-        $countSql .= " AND p.id_usuario_creador = :creador";
+        $countSql .= " AND p.id_usuario_creador = ?";
+        $countParams[] = $usuario;
     } else {
-        $countSql .= " AND p.id_usuario_creador = :user_id";
+        $countSql .= " AND p.id_usuario_creador = ?";
+        $countParams[] = $userId;
     }
     
     if ($genero) {
-        $countSql .= " AND p.genero_id = :genero";
+        $countSql .= " AND p.genero_id = ?";
+        $countParams[] = $genero;
     }
     
     if ($busqueda) {
-        $countSql .= " AND (p.titulo LIKE :busqueda OR p.director LIKE :busqueda)";
+        $countSql .= " AND (p.titulo LIKE ? OR p.director LIKE ?)";
+        $countParams[] = $searchTerm;
+        $countParams[] = $searchTerm;
     }
     
+    // ejecutar consulta de conteo
     $countStmt = $conn->prepare($countSql);
-    $countStmt->execute($params);
+    $countStmt->execute($countParams);
     $totalElementos = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
     
-    // obtener datos paginados
-    $sql .= " LIMIT :limite OFFSET :offset";
-    $params[':limite'] = $limite;
-    $params[':offset'] = $offset;
+    // agregar paginación a consulta principal
+    $sql .= " LIMIT ? OFFSET ?";
+    $bindParams[] = $limite;
+    $bindParams[] = $offset;
     
     $stmt = $conn->prepare($sql);
-    $stmt->execute($params);
+    $stmt->execute($bindParams);
     $peliculas = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     // formatear datos
