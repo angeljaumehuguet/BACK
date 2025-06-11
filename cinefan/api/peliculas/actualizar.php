@@ -1,6 +1,10 @@
 <?php
 require_once '../config/cors.php';
 require_once '../config/database.php';
+require_once '../includes/response.php';
+require_once '../includes/auth.php';
+require_once '../includes/functions.php';
+require_once '../config/config.php';
 
 // validar método
 Response::validateMethod(['PUT']);

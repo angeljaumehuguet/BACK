@@ -1,10 +1,10 @@
 <?php
 class Database {
     // configuracion de la base de datos
-    private $host = '192.168.172.30';
+    private $host = 'localhost';
     private $db_name = 'cinefan_db';
-    private $username = 'root';
-    private $password = '';
+    private $username = 'cinefan';
+    private $password = 'angel';
     private $charset = 'utf8mb4';
     
     private $connection = null;
@@ -38,7 +38,7 @@ class Database {
             
         } catch (PDOException $e) {
             error_log("Error de conexión a la base de datos: " . $e->getMessage());
-            throw new Exception("Error de conexión a la base de datos");
+            throw new Exception('Error de conexión a la base de datos: ' . $e->getMessage());;
         }
     }
     

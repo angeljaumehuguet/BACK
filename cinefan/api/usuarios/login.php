@@ -1,6 +1,11 @@
 <?php
 require_once '../config/cors.php';
+require_once '../config/config.php';
 require_once '../config/database.php';
+require_once '../includes/response.php';
+require_once '../includes/auth.php';
+require_once '../includes/functions.php';
+require_once '../config/config.php';
 
 // validar método
 Response::validateMethod(['POST']);
@@ -20,13 +25,15 @@ try {
     $conn = $db->getConnection();
     
     // buscar usuario por nombre de usuario o email
-    $sql = "SELECT id, nombre_usuario, email, password, nombre_completo, activo 
-            FROM usuarios 
-            WHERE (nombre_usuario = :usuario OR email = :usuario) AND activo = true";
-    
+    $sql = "SELECT id, nombre_usuario, email, password, nombre_completo, activo, fecha_registro 
+        FROM usuarios 
+        WHERE (nombre_usuario = :nombre_usuario OR email = :email) AND activo = true";
+
     $stmt = $conn->prepare($sql);
-    $stmt->bindParam(':usuario', $usuario);
-    $stmt->execute();
+    $stmt->execute([
+        ':nombre_usuario' => $usuario,
+        ':email' => $usuario
+    ]);
     
     $userData = $stmt->fetch(PDO::FETCH_ASSOC);
     

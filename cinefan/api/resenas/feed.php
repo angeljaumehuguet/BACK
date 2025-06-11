@@ -1,6 +1,10 @@
 <?php
 require_once '../config/cors.php';
 require_once '../config/database.php';
+require_once '../includes/response.php';
+require_once '../includes/auth.php';
+require_once '../includes/functions.php';
+require_once '../config/config.php';
 
 // validar método
 Response::validateMethod(['GET']);
@@ -23,21 +27,25 @@ try {
     
     // construir consulta base
     $sql = "SELECT r.id, r.puntuacion, r.titulo as titulo_resena, r.texto_resena, 
-                   r.fecha_resena, r.likes, r.es_spoiler,
-                   u.nombre_usuario, u.nombre_completo, u.avatar_url,
-                   p.id as pelicula_id, p.titulo as pelicula_titulo, p.director, 
-                   p.ano_lanzamiento, p.imagen_url as pelicula_imagen,
-                   g.nombre as genero, g.color_hex as color_genero,
-                   CASE WHEN lr.id IS NOT NULL THEN 1 ELSE 0 END as usuario_dio_like,
-                   CASE WHEN f.id IS NOT NULL THEN 1 ELSE 0 END as pelicula_es_favorita
-            FROM resenas r
-            INNER JOIN usuarios u ON r.id_usuario = u.id
-            INNER JOIN peliculas p ON r.id_pelicula = p.id
-            INNER JOIN generos g ON p.genero_id = g.id
-            LEFT JOIN likes_resenas lr ON r.id = lr.id_resena AND lr.id_usuario = :user_id
-            LEFT JOIN favoritos f ON p.id = f.id_pelicula AND f.id_usuario = :user_id";
+               r.fecha_resena, r.likes, r.es_spoiler,
+               u.nombre_usuario, u.nombre_completo, u.avatar_url,
+               p.id as pelicula_id, p.titulo as pelicula_titulo, p.director, 
+               p.ano_lanzamiento, p.imagen_url as pelicula_imagen,
+               g.nombre as genero, g.color_hex as color_genero,
+               CASE WHEN lr.id IS NOT NULL THEN 1 ELSE 0 END as usuario_dio_like,
+               CASE WHEN f.id IS NOT NULL THEN 1 ELSE 0 END as pelicula_es_favorita
+        FROM resenas r
+        INNER JOIN usuarios u ON r.id_usuario = u.id
+        INNER JOIN peliculas p ON r.id_pelicula = p.id
+        INNER JOIN generos g ON p.genero_id = g.id
+        LEFT JOIN likes_resenas lr ON r.id = lr.id_resena AND lr.id_usuario = :user_id_like
+        LEFT JOIN favoritos f ON p.id = f.id_pelicula AND f.id_usuario = :user_id_fav";
     
-    $params = [':user_id' => $userId];
+    $params = [
+    ':user_id_like' => $userId,
+    ':user_id_fav' => $userId,
+    ':user_id' => $userId // Para usarlo en filtros como 'mis_resenas'
+    ];
     
     // condiciones base
     $conditions = ["r.activo = true", "u.activo = true", "p.activo = true"];
@@ -69,18 +77,19 @@ try {
     
     $sql .= " ORDER BY r.fecha_resena DESC";
     
-    // contar total de registros
-    $countSql = str_replace(
-        "SELECT r.id, r.puntuacion, r.titulo as titulo_resena, r.texto_resena, r.fecha_resena, r.likes, r.es_spoiler, u.nombre_usuario, u.nombre_completo, u.avatar_url, p.id as pelicula_id, p.titulo as pelicula_titulo, p.director, p.ano_lanzamiento, p.imagen_url as pelicula_imagen, g.nombre as genero, g.color_hex as color_genero, CASE WHEN lr.id IS NOT NULL THEN 1 ELSE 0 END as usuario_dio_like, CASE WHEN f.id IS NOT NULL THEN 1 ELSE 0 END as pelicula_es_favorita",
-        "SELECT COUNT(DISTINCT r.id) as total",
-        $sql
-    );
-    
-    // remover ORDER BY del count
-    $countSql = preg_replace('/ORDER BY.*$/', '', $countSql);
+    $fromPosition = stripos($sql, ' FROM ');
+    $fromAndWherePart = substr($sql, $fromPosition);
+
+    $fromAndWherePart = preg_replace('/ORDER BY.*$/', '', $fromAndWherePart);
+
+    // creamos la consulta de conteo final
+    $countSql = "SELECT COUNT(DISTINCT r.id) as total" . $fromAndWherePart;
     
     $countStmt = $conn->prepare($countSql);
     $countStmt->execute($params);
+
+    die("DEBUG C: execute() para el conteo se ejecutó sin error.");
+
     $totalElementos = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
     
     // obtener datos paginados

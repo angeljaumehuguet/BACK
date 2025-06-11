@@ -1,16 +1,6 @@
--- ===============================================
--- 🎬 CINEFAN - BASE DE DATOS COMPLETA
--- ===============================================
-
--- Crear base de datos
 CREATE DATABASE IF NOT EXISTS cinefan_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE cinefan_db;
 
--- ===============================================
--- TABLAS PRINCIPALES
--- ===============================================
-
--- Tabla de usuarios
 CREATE TABLE usuarios (
     id INT PRIMARY KEY AUTO_INCREMENT,
     nombre_usuario VARCHAR(50) UNIQUE NOT NULL,
@@ -27,7 +17,6 @@ CREATE TABLE usuarios (
     INDEX idx_activo (activo)
 );
 
--- Tabla de géneros
 CREATE TABLE generos (
     id INT PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(50) UNIQUE NOT NULL,
@@ -36,7 +25,6 @@ CREATE TABLE generos (
     activo BOOLEAN DEFAULT TRUE
 );
 
--- Tabla de películas
 CREATE TABLE peliculas (
     id INT PRIMARY KEY AUTO_INCREMENT,
     titulo VARCHAR(200) NOT NULL,
@@ -60,7 +48,6 @@ CREATE TABLE peliculas (
     INDEX idx_activo (activo)
 );
 
--- Tabla de reseñas
 CREATE TABLE resenas (
     id INT PRIMARY KEY AUTO_INCREMENT,
     id_usuario INT NOT NULL,
@@ -84,7 +71,6 @@ CREATE TABLE resenas (
     INDEX idx_activo (activo)
 );
 
--- Tabla de películas favoritas
 CREATE TABLE favoritos (
     id INT PRIMARY KEY AUTO_INCREMENT,
     id_usuario INT NOT NULL,
@@ -97,7 +83,6 @@ CREATE TABLE favoritos (
     INDEX idx_pelicula (id_pelicula)
 );
 
--- Tabla de seguimientos entre usuarios
 CREATE TABLE seguimientos (
     id INT PRIMARY KEY AUTO_INCREMENT,
     id_seguidor INT NOT NULL,
@@ -112,7 +97,6 @@ CREATE TABLE seguimientos (
     INDEX idx_seguido (id_seguido)
 );
 
--- Tabla de likes en reseñas
 CREATE TABLE likes_resenas (
     id INT PRIMARY KEY AUTO_INCREMENT,
     id_usuario INT NOT NULL,
@@ -125,7 +109,6 @@ CREATE TABLE likes_resenas (
     INDEX idx_resena (id_resena)
 );
 
--- Tabla de administradores del panel web
 CREATE TABLE administradores (
     id INT PRIMARY KEY AUTO_INCREMENT,
     usuario VARCHAR(50) UNIQUE NOT NULL,
@@ -139,10 +122,6 @@ CREATE TABLE administradores (
     INDEX idx_usuario (usuario),
     INDEX idx_nivel (nivel_acceso)
 );
-
--- ===============================================
--- INSERTAR GÉNEROS PREDEFINIDOS
--- ===============================================
 
 INSERT INTO generos (nombre, descripcion, color_hex) VALUES
 ('Acción', 'Películas con secuencias de acción, combates y aventura', '#dc3545'),
@@ -159,18 +138,12 @@ INSERT INTO generos (nombre, descripcion, color_hex) VALUES
 ('Western', 'Películas ambientadas en el oeste americano', '#a16207'),
 ('Fantasía', 'Películas con elementos mágicos y fantásticos', '#9333ea');
 
--- ===============================================
--- DATOS DE EJEMPLO
--- ===============================================
-
--- Usuarios de ejemplo
 INSERT INTO usuarios (nombre_usuario, email, password, nombre_completo, biografia) VALUES
 ('angel_admin', 'angel@cinefan.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Ángel González', 'Desarrollador y amante del cine. Fundador de CineFan.'),
 ('maria_cine', 'maria@email.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'María López', 'Crítica de cine y fanática de los thrillers.'),
 ('carlos_film', 'carlos@email.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Carlos Martín', 'Coleccionista de películas clásicas.'),
 ('ana_reviews', 'ana@email.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Ana Rodríguez', 'Experta en cine independiente y documentales.');
 
--- Películas de ejemplo
 INSERT INTO peliculas (titulo, director, ano_lanzamiento, duracion_minutos, genero_id, sinopsis, imagen_url, id_usuario_creador) VALUES
 ('Oppenheimer', 'Christopher Nolan', 2023, 180, 4, 'La historia del físico J. Robert Oppenheimer y el desarrollo de la bomba atómica.', 'https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg', 1),
 ('Barbie', 'Greta Gerwig', 2023, 114, 3, 'Barbie vive en Barbieland donde todo es perfecto y rosa. Un día decide aventurarse al mundo real.', 'https://image.tmdb.org/t/p/w500/iuFNMS8U5cb6xfzi51Dbkovj7vM.jpg', 2),
@@ -179,7 +152,6 @@ INSERT INTO peliculas (titulo, director, ano_lanzamiento, duracion_minutos, gene
 ('The Menu', 'Mark Mylod', 2022, 107, 8, 'Una pareja viaja a una isla remota para cenar en un restaurante exclusivo.', 'https://image.tmdb.org/t/p/w500/56v2KjBlU4XaOv9rVYEQypROD7P.jpg', 4),
 ('Top Gun: Maverick', 'Joseph Kosinski', 2022, 131, 1, 'Pete "Maverick" Mitchell sigue siendo un piloto de élite de la Marina.', 'https://image.tmdb.org/t/p/w500/62HCnUTziyWcpDaBO2i1DX17ljH.jpg', 2);
 
--- Reseñas de ejemplo
 INSERT INTO resenas (id_usuario, id_pelicula, puntuacion, titulo, texto_resena) VALUES
 (1, 1, 5, 'Obra maestra cinematográfica', 'Nolan vuelve a demostrar por qué es uno de los mejores directores actuales. Una película compleja, visualmente impresionante y con actuaciones soberbias.'),
 (2, 1, 4, 'Excelente pero densa', 'Una película brillante que requiere atención total. La cinematografía es espectacular aunque a veces se siente un poco larga.'),
@@ -190,14 +162,12 @@ INSERT INTO resenas (id_usuario, id_pelicula, puntuacion, titulo, texto_resena) 
 (3, 5, 4, 'Thriller psicológico efectivo', 'Una película que te mantiene en tensión todo el tiempo. Excelente atmósfera y un final inesperado.'),
 (4, 6, 5, 'Nostalgia y adrenalina perfectas', 'Tom Cruise demuestra que sigue siendo el rey de las películas de acción. Una secuela que supera a la original.');
 
--- Favoritos de ejemplo
 INSERT INTO favoritos (id_usuario, id_pelicula) VALUES
 (1, 1), (1, 3), (1, 6),
 (2, 1), (2, 2), (2, 5),
 (3, 2), (3, 4), (3, 6),
 (4, 2), (4, 3), (4, 5);
 
--- Seguimientos de ejemplo
 INSERT INTO seguimientos (id_seguidor, id_seguido) VALUES
 (1, 2), (1, 3), (1, 4),
 (2, 1), (2, 4),
@@ -208,11 +178,6 @@ INSERT INTO seguimientos (id_seguidor, id_seguido) VALUES
 INSERT INTO administradores (usuario, password, nombre_completo, email, nivel_acceso) VALUES
 ('admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Administrador CineFan', 'admin@cinefan.com', 'admin');
 
--- ===============================================
--- VISTAS ÚTILES
--- ===============================================
-
--- Vista de películas con información completa
 CREATE OR REPLACE VIEW vista_peliculas_completas AS
 SELECT 
     p.id,
@@ -237,7 +202,6 @@ WHERE p.activo = TRUE
 GROUP BY p.id, p.titulo, p.director, p.ano_lanzamiento, p.duracion_minutos, 
          g.nombre, p.sinopsis, p.imagen_url, u.nombre_usuario, p.fecha_creacion;
 
--- Vista del feed de reseñas
 CREATE OR REPLACE VIEW vista_feed_resenas AS
 SELECT 
     r.id,
@@ -260,13 +224,8 @@ INNER JOIN generos g ON p.genero_id = g.id
 WHERE r.activo = TRUE AND u.activo = TRUE AND p.activo = TRUE
 ORDER BY r.fecha_resena DESC;
 
--- ===============================================
--- PROCEDIMIENTOS ALMACENADOS
--- ===============================================
-
 DELIMITER //
 
--- Procedimiento para obtener estadísticas de usuario
 CREATE PROCEDURE GetUsuarioEstadisticas(IN usuario_id INT)
 BEGIN
     SELECT 
@@ -285,7 +244,6 @@ BEGIN
     WHERE u.id = usuario_id AND u.activo = TRUE;
 END //
 
--- Procedimiento para actualizar contadores de likes
 CREATE PROCEDURE ActualizarLikesResena(IN resena_id INT)
 BEGIN
     UPDATE resenas 
@@ -297,7 +255,6 @@ BEGIN
     WHERE id = resena_id;
 END //
 
--- Procedimiento para obtener feed personalizado
 CREATE PROCEDURE GetFeedPersonalizado(IN usuario_id INT, IN limite INT, IN offset_val INT)
 BEGIN
     SELECT 
@@ -329,13 +286,8 @@ END //
 
 DELIMITER ;
 
--- ===============================================
--- TRIGGERS
--- ===============================================
-
 DELIMITER //
 
--- Trigger para actualizar fecha de último acceso
 CREATE TRIGGER actualizar_ultimo_acceso 
 BEFORE UPDATE ON usuarios 
 FOR EACH ROW
@@ -345,7 +297,6 @@ BEGIN
     END IF;
 END //
 
--- Trigger para mantener integridad en likes
 CREATE TRIGGER after_insert_like
 AFTER INSERT ON likes_resenas
 FOR EACH ROW
@@ -362,21 +313,12 @@ END //
 
 DELIMITER ;
 
--- ===============================================
--- ÍNDICES ADICIONALES PARA OPTIMIZACIÓN
--- ===============================================
 
 CREATE INDEX idx_resenas_fecha_puntuacion ON resenas(fecha_resena DESC, puntuacion DESC);
 CREATE INDEX idx_peliculas_ano_genero ON peliculas(ano_lanzamiento, genero_id);
 CREATE INDEX idx_usuarios_fecha_registro ON usuarios(fecha_registro);
 CREATE INDEX idx_favoritos_fecha ON favoritos(fecha_agregado);
 
--- ===============================================
--- CONFIGURACIÓN FINAL
--- ===============================================
-
--- Habilitar el modo de verificación de claves foráneas
 SET FOREIGN_KEY_CHECKS = 1;
 
--- Mensaje de confirmación
 SELECT 'Base de datos CineFan creada exitosamente!' as mensaje;
