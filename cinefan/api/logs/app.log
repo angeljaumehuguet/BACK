@@ -1,0 +1,25 @@
+[2025-06-11 11:15:42] [INFO] Usuario 1 creó película: Mad Max: Fury Road (ID: 8)
+[2025-06-11 11:25:41] [ERROR] Error en feed: SQLSTATE[HY093]: Invalid parameter number
+[2025-06-11 11:26:03] [ERROR] Error en feed: SQLSTATE[HY093]: Invalid parameter number
+[2025-06-11 11:26:08] [ERROR] Error en feed: SQLSTATE[HY093]: Invalid parameter number
+[2025-06-11 11:26:39] [ERROR] Error en feed: SQLSTATE[HY093]: Invalid parameter number
+[2025-06-11 11:32:11] [ERROR] Error en detalle película: SQLSTATE[HY093]: Invalid parameter number
+[2025-06-11 11:32:25] [ERROR] Error en detalle película: SQLSTATE[HY093]: Invalid parameter number
+[2025-06-11 11:35:30] [ERROR] Error en feed: SQLSTATE[HY093]: Invalid parameter number
+[2025-06-11 11:36:15] [ERROR] Error en feed: SQLSTATE[HY093]: Invalid parameter number
+[2025-06-11 11:36:51] [ERROR] Error en feed: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined
+[2025-06-11 11:38:33] [ERROR] Error en crear reseña: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'puntuacion_promedio' in 'field list'
+[2025-06-11 11:38:44] [ERROR] Error en crear reseña: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'puntuacion_promedio' in 'field list'
+[2025-06-11 11:38:52] [ERROR] Error en crear reseña: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'puntuacion_promedio' in 'field list'
+[2025-06-11 11:40:21] [ERROR] Error en gestión de likes: SQLSTATE[HY093]: Invalid parameter number
+[2025-06-11 11:40:32] [ERROR] Error en gestión de likes: SQLSTATE[HY093]: Invalid parameter number
+[2025-06-11 11:41:24] [ERROR] Error en gestión de likes: SQLSTATE[HY093]: Invalid parameter number
+[2025-06-11 11:47:02] [ERROR] Error siguiendo usuario: SQLSTATE[23000]: Integrity constraint violation: 4025 CONSTRAINT `CONSTRAINT_1` failed for `cinefan_db`.`seguimientos`
+[2025-06-11 11:49:25] [ERROR] Error en búsqueda global: SQLSTATE[HY093]: Invalid parameter number
+[2025-06-11 11:50:11] [ERROR] Error en búsqueda global: SQLSTATE[HY093]: Invalid parameter number
+[2025-06-11 11:50:47] [ERROR] Error en búsqueda global: SQLSTATE[HY093]: Invalid parameter number
+[2025-06-11 11:51:20] [ERROR] Error en búsqueda global: SQLSTATE[HY093]: Invalid parameter number
+[2025-06-11 11:51:25] [ERROR] Error en búsqueda global: SQLSTATE[HY093]: Invalid parameter number
+[2025-06-11 11:53:07] [ERROR] Error en feed: SQLSTATE[HY093]: Invalid parameter number
+[2025-06-11 11:56:59] [INFO] Nuevo usuario registrado: testuser11 (ID: 7)
+[2025-06-11 11:59:13] [ERROR] Error en detalle película: SQLSTATE[HY093]: Invalid parameter number

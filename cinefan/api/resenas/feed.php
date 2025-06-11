@@ -17,7 +17,7 @@ try {
     // parámetros de consulta
     $pagina = isset($_GET['pagina']) ? max(1, (int)$_GET['pagina']) : 1;
     $limite = isset($_GET['limite']) ? min(50, max(1, (int)$_GET['limite'])) : DEFAULT_PAGE_SIZE;
-    $tipo = isset($_GET['tipo']) ? $_GET['tipo'] : 'todos'; // todos, siguiendo, recientes
+    $tipo = isset($_GET['tipo']) ? $_GET['tipo'] : 'todos'; // todos, siguiendo, recientes, mis_resenas
     $genero = isset($_GET['genero']) ? (int)$_GET['genero'] : null;
     
     $offset = ($pagina - 1) * $limite;
@@ -38,22 +38,21 @@ try {
         INNER JOIN usuarios u ON r.id_usuario = u.id
         INNER JOIN peliculas p ON r.id_pelicula = p.id
         INNER JOIN generos g ON p.genero_id = g.id
-        LEFT JOIN likes_resenas lr ON r.id = lr.id_resena AND lr.id_usuario = ?
-        LEFT JOIN favoritos f ON p.id = f.id_pelicula AND f.id_usuario = ?";
+        LEFT JOIN likes_resenas lr ON r.id = lr.id_resena AND lr.id_usuario = :user_id
+        LEFT JOIN favoritos f ON p.id = f.id_pelicula AND f.id_usuario = :user_id";
+    
+    $params = [':user_id' => $userId];
     
     // condiciones base
     $conditions = ["r.activo = true", "u.activo = true", "p.activo = true"];
-    $bindParams = [$userId, $userId];
     
     // filtro por tipo de feed
     switch ($tipo) {
         case 'siguiendo':
-            $sql .= " INNER JOIN seguimientos s ON r.id_usuario = s.id_seguido AND s.id_seguidor = ? AND s.activo = true";
-            $bindParams[] = $userId;
+            $sql .= " INNER JOIN seguimientos s ON r.id_usuario = s.id_seguido AND s.id_seguidor = :user_id";
             break;
         case 'mis_resenas':
-            $conditions[] = "r.id_usuario = ?";
-            $bindParams[] = $userId;
+            $conditions[] = "r.id_usuario = :user_id";
             break;
         case 'recientes':
             $conditions[] = "r.fecha_resena >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
@@ -63,8 +62,8 @@ try {
     
     // filtro por género
     if ($genero) {
-        $conditions[] = "p.genero_id = ?";
-        $bindParams[] = $genero;
+        $conditions[] = "p.genero_id = :genero";
+        $params[':genero'] = $genero;
     }
     
     // agregar condiciones
@@ -72,55 +71,35 @@ try {
         $sql .= " WHERE " . implode(' AND ', $conditions);
     }
     
-    $sql .= " ORDER BY r.fecha_resena DESC";
-    
-    // consulta de conteo
+    // consulta de conteo para paginación
     $countSql = "SELECT COUNT(DISTINCT r.id) as total
-        FROM resenas r
-        INNER JOIN usuarios u ON r.id_usuario = u.id
-        INNER JOIN peliculas p ON r.id_pelicula = p.id
-        INNER JOIN generos g ON p.genero_id = g.id";
+                FROM resenas r
+                INNER JOIN usuarios u ON r.id_usuario = u.id
+                INNER JOIN peliculas p ON r.id_pelicula = p.id
+                INNER JOIN generos g ON p.genero_id = g.id";
     
-    // agregar joins específicos para el conteo según el tipo
-    $countBindParams = [];
-    switch ($tipo) {
-        case 'siguiendo':
-            $countSql .= " INNER JOIN seguimientos s ON r.id_usuario = s.id_seguido AND s.id_seguidor = ? AND s.activo = true";
-            $countBindParams[] = $userId;
-            break;
+    // agregar JOIN para siguiendo si es necesario
+    if ($tipo === 'siguiendo') {
+        $countSql .= " INNER JOIN seguimientos s ON r.id_usuario = s.id_seguido AND s.id_seguidor = :user_id";
     }
     
     // agregar condiciones al conteo
-    $countConditions = ["r.activo = true", "u.activo = true", "p.activo = true"];
-    
-    if ($tipo === 'mis_resenas') {
-        $countConditions[] = "r.id_usuario = ?";
-        $countBindParams[] = $userId;
-    } elseif ($tipo === 'recientes') {
-        $countConditions[] = "r.fecha_resena >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
+    if (!empty($conditions)) {
+        $countSql .= " WHERE " . implode(' AND ', $conditions);
     }
     
-    if ($genero) {
-        $countConditions[] = "p.genero_id = ?";
-        $countBindParams[] = $genero;
-    }
-    
-    if (!empty($countConditions)) {
-        $countSql .= " WHERE " . implode(' AND ', $countConditions);
-    }
-    
-    // ejecutar consulta de conteo
     $countStmt = $conn->prepare($countSql);
-    $countStmt->execute($countBindParams);
+    $countStmt->execute($params);
     $totalElementos = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
     
-    // agregar paginación a consulta principal
-    $sql .= " LIMIT ? OFFSET ?";
-    $bindParams[] = $limite;
-    $bindParams[] = $offset;
+    // ordenar y paginar consulta principal
+    $sql .= " ORDER BY r.fecha_resena DESC";
+    $sql .= " LIMIT :limite OFFSET :offset";
+    $params[':limite'] = $limite;
+    $params[':offset'] = $offset;
     
     $stmt = $conn->prepare($sql);
-    $stmt->execute($bindParams);
+    $stmt->execute($params);
     $resenas = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     // formatear datos
@@ -132,6 +111,13 @@ try {
         $resena['texto_preview'] = strlen($resena['texto_resena']) > 200 
             ? substr($resena['texto_resena'], 0, 200) . '...' 
             : $resena['texto_resena'];
+        
+        // formatear datos numéricos
+        $resena['id'] = (int)$resena['id'];
+        $resena['puntuacion'] = (int)$resena['puntuacion'];
+        $resena['likes'] = (int)$resena['likes'];
+        $resena['pelicula_id'] = (int)$resena['pelicula_id'];
+        $resena['ano_lanzamiento'] = (int)$resena['ano_lanzamiento'];
     }
     
     Response::paginated($resenas, $pagina, $totalElementos, $limite, 'Feed obtenido exitosamente');
