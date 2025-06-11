@@ -23,3 +23,15 @@
 [2025-06-11 11:53:07] [ERROR] Error en feed: SQLSTATE[HY093]: Invalid parameter number
 [2025-06-11 11:56:59] [INFO] Nuevo usuario registrado: testuser11 (ID: 7)
 [2025-06-11 11:59:13] [ERROR] Error en detalle película: SQLSTATE[HY093]: Invalid parameter number
+[2025-06-11 14:33:12] [ERROR] Error en detalle película: SQLSTATE[HY093]: Invalid parameter number
+[2025-06-11 14:34:40] [INFO] Usuario 1 creó reseña para película 5 (ID: 12)
+[2025-06-11 14:35:47] [ERROR] Error en gestión de likes: SQLSTATE[HY093]: Invalid parameter number
+[2025-06-11 14:35:51] [ERROR] Error en gestión de likes: SQLSTATE[HY093]: Invalid parameter number
+[2025-06-11 14:35:56] [ERROR] Error en gestión de likes: SQLSTATE[HY093]: Invalid parameter number
+[2025-06-11 14:36:02] [ERROR] Error en gestión de likes: SQLSTATE[HY093]: Invalid parameter number
+[2025-06-11 14:36:08] [ERROR] Error en gestión de likes: SQLSTATE[HY093]: Invalid parameter number
+[2025-06-11 14:38:25] [ERROR] Error en búsqueda: SQLSTATE[HY093]: Invalid parameter number
+[2025-06-11 14:45:52] [INFO] Usuario 1 dio like a reseña 2
+[2025-06-11 14:46:24] [INFO] Usuario 1 quitó like de reseña 2
+[2025-06-11 14:47:03] [ERROR] Error en detalle película: SQLSTATE[HY093]: Invalid parameter number
+[2025-06-11 14:47:25] [ERROR] Error en búsqueda: SQLSTATE[HY093]: Invalid parameter number

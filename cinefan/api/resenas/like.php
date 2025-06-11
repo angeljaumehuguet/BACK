@@ -43,37 +43,21 @@ try {
         Response::error('Reseña no encontrada', 404);
     }
     
+    // no permitir dar like a reseña propia (solo para POST)
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && $resena['id_usuario'] == $userId) {
+        Response::error('No puedes dar like a tu propia reseña', 400);
+    }
+    
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        // AGREGAR LIKE
-        
-        // no permitir dar like a reseña propia
-        if ($resena['id_usuario'] == $userId) {
-            Response::error('No puedes dar like a tu propia reseña', 400);
-        }
-        
-        // verificar si ya dio like
-        $checkLikeSql = "SELECT id FROM likes_resenas WHERE id_usuario = :user_id AND id_resena = :resena_id";
-        $checkLikeStmt = $conn->prepare($checkLikeSql);
-        $checkLikeStmt->bindParam(':user_id', $userId);
-        $checkLikeStmt->bindParam(':resena_id', $resenaId);
-        $checkLikeStmt->execute();
-        
-        if ($checkLikeStmt->fetch()) {
-            Response::error('Ya has dado like a esta reseña', 409);
-        }
-        
-        // agregar like
-        $likeSql = "INSERT INTO likes_resenas (id_usuario, id_resena) VALUES (:user_id, :resena_id)";
+        // dar like
+        $likeSql = "INSERT IGNORE INTO likes_resenas (id_usuario, id_resena) VALUES (:user_id, :resena_id)";
         $likeStmt = $conn->prepare($likeSql);
         $likeStmt->bindParam(':user_id', $userId);
         $likeStmt->bindParam(':resena_id', $resenaId);
         
         if ($likeStmt->execute()) {
-            // actualizar contador
-            $updateSql = "UPDATE resenas SET likes = (SELECT COUNT(*) FROM likes_resenas WHERE id_resena = :resena_id) WHERE id = :resena_id";
-            $updateStmt = $conn->prepare($updateSql);
-            $updateStmt->bindParam(':resena_id', $resenaId);
-            $updateStmt->execute();
+            // actualizar contador usando procedimiento almacenado
+            $conn->exec("CALL ActualizarLikesResena({$resenaId})");
             
             Utils::log("Usuario {$userId} dio like a reseña {$resenaId}", 'INFO');
             Response::success(null, 'Like agregado exitosamente');
@@ -82,19 +66,6 @@ try {
         }
         
     } else {
-        // QUITAR LIKE (DELETE)
-        
-        // verificar si el usuario tiene like en esta reseña
-        $checkLikeSql = "SELECT id FROM likes_resenas WHERE id_usuario = :user_id AND id_resena = :resena_id";
-        $checkLikeStmt = $conn->prepare($checkLikeSql);
-        $checkLikeStmt->bindParam(':user_id', $userId);
-        $checkLikeStmt->bindParam(':resena_id', $resenaId);
-        $checkLikeStmt->execute();
-        
-        if (!$checkLikeStmt->fetch()) {
-            Response::error('No has dado like a esta reseña', 404);
-        }
-        
         // quitar like
         $unlikeSql = "DELETE FROM likes_resenas WHERE id_usuario = :user_id AND id_resena = :resena_id";
         $unlikeStmt = $conn->prepare($unlikeSql);
@@ -102,11 +73,8 @@ try {
         $unlikeStmt->bindParam(':resena_id', $resenaId);
         
         if ($unlikeStmt->execute()) {
-            // actualizar contador
-            $updateSql = "UPDATE resenas SET likes = (SELECT COUNT(*) FROM likes_resenas WHERE id_resena = :resena_id) WHERE id = :resena_id";
-            $updateStmt = $conn->prepare($updateSql);
-            $updateStmt->bindParam(':resena_id', $resenaId);
-            $updateStmt->execute();
+            // actualizar contador usando procedimiento almacenado
+            $conn->exec("CALL ActualizarLikesResena({$resenaId})");
             
             Utils::log("Usuario {$userId} quitó like de reseña {$resenaId}", 'INFO');
             Response::success(null, 'Like removido exitosamente');
@@ -119,3 +87,4 @@ try {
     Utils::log("Error en gestión de likes: " . $e->getMessage(), 'ERROR');
     Response::error('Error interno del servidor', 500);
 }
+?>

@@ -17,7 +17,7 @@ try {
     // parámetros de consulta
     $pagina = isset($_GET['pagina']) ? max(1, (int)$_GET['pagina']) : 1;
     $limite = isset($_GET['limite']) ? min(50, max(1, (int)$_GET['limite'])) : DEFAULT_PAGE_SIZE;
-    $tipo = isset($_GET['tipo']) ? $_GET['tipo'] : 'todos'; // todos, siguiendo, recientes, mis_resenas
+    $tipo = isset($_GET['tipo']) ? $_GET['tipo'] : 'todos'; // todos, siguiendo, recientes
     $genero = isset($_GET['genero']) ? (int)$_GET['genero'] : null;
     
     $offset = ($pagina - 1) * $limite;
@@ -38,10 +38,13 @@ try {
         INNER JOIN usuarios u ON r.id_usuario = u.id
         INNER JOIN peliculas p ON r.id_pelicula = p.id
         INNER JOIN generos g ON p.genero_id = g.id
-        LEFT JOIN likes_resenas lr ON r.id = lr.id_resena AND lr.id_usuario = :user_id
-        LEFT JOIN favoritos f ON p.id = f.id_pelicula AND f.id_usuario = :user_id";
+        LEFT JOIN likes_resenas lr ON r.id = lr.id_resena AND lr.id_usuario = :user_id_like
+        LEFT JOIN favoritos f ON p.id = f.id_pelicula AND f.id_usuario = :user_id_fav";
     
-    $params = [':user_id' => $userId];
+    $params = [
+        ':user_id_like' => $userId,
+        ':user_id_fav' => $userId
+    ];
     
     // condiciones base
     $conditions = ["r.activo = true", "u.activo = true", "p.activo = true"];
@@ -49,10 +52,12 @@ try {
     // filtro por tipo de feed
     switch ($tipo) {
         case 'siguiendo':
-            $sql .= " INNER JOIN seguimientos s ON r.id_usuario = s.id_seguido AND s.id_seguidor = :user_id";
+            $sql .= " INNER JOIN seguimientos s ON r.id_usuario = s.id_seguido AND s.id_seguidor = :user_id_seguidor AND s.activo = true";
+            $params[':user_id_seguidor'] = $userId;
             break;
         case 'mis_resenas':
-            $conditions[] = "r.id_usuario = :user_id";
+            $conditions[] = "r.id_usuario = :user_id_mis";
+            $params[':user_id_mis'] = $userId;
             break;
         case 'recientes':
             $conditions[] = "r.fecha_resena >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
@@ -71,29 +76,21 @@ try {
         $sql .= " WHERE " . implode(' AND ', $conditions);
     }
     
+    $sql .= " ORDER BY r.fecha_resena DESC";
+    
     // consulta de conteo para paginación
-    $countSql = "SELECT COUNT(DISTINCT r.id) as total
-                FROM resenas r
-                INNER JOIN usuarios u ON r.id_usuario = u.id
-                INNER JOIN peliculas p ON r.id_pelicula = p.id
-                INNER JOIN generos g ON p.genero_id = g.id";
+    $fromPosition = stripos($sql, ' FROM ');
+    $fromAndWherePart = substr($sql, $fromPosition);
+    $fromAndWherePart = preg_replace('/ORDER BY.*$/', '', $fromAndWherePart);
     
-    // agregar JOIN para siguiendo si es necesario
-    if ($tipo === 'siguiendo') {
-        $countSql .= " INNER JOIN seguimientos s ON r.id_usuario = s.id_seguido AND s.id_seguidor = :user_id";
-    }
-    
-    // agregar condiciones al conteo
-    if (!empty($conditions)) {
-        $countSql .= " WHERE " . implode(' AND ', $conditions);
-    }
+    // consulta de conteo final
+    $countSql = "SELECT COUNT(DISTINCT r.id) as total" . $fromAndWherePart;
     
     $countStmt = $conn->prepare($countSql);
     $countStmt->execute($params);
     $totalElementos = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
     
-    // ordenar y paginar consulta principal
-    $sql .= " ORDER BY r.fecha_resena DESC";
+    // obtener datos paginados
     $sql .= " LIMIT :limite OFFSET :offset";
     $params[':limite'] = $limite;
     $params[':offset'] = $offset;
@@ -111,13 +108,6 @@ try {
         $resena['texto_preview'] = strlen($resena['texto_resena']) > 200 
             ? substr($resena['texto_resena'], 0, 200) . '...' 
             : $resena['texto_resena'];
-        
-        // formatear datos numéricos
-        $resena['id'] = (int)$resena['id'];
-        $resena['puntuacion'] = (int)$resena['puntuacion'];
-        $resena['likes'] = (int)$resena['likes'];
-        $resena['pelicula_id'] = (int)$resena['pelicula_id'];
-        $resena['ano_lanzamiento'] = (int)$resena['ano_lanzamiento'];
     }
     
     Response::paginated($resenas, $pagina, $totalElementos, $limite, 'Feed obtenido exitosamente');
@@ -126,3 +116,4 @@ try {
     Utils::log("Error en feed: " . $e->getMessage(), 'ERROR');
     Response::error('Error interno del servidor', 500);
 }
+?>
