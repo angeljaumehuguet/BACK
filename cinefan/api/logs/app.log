@@ -35,3 +35,13 @@
 [2025-06-11 14:46:24] [INFO] Usuario 1 quitó like de reseña 2
 [2025-06-11 14:47:03] [ERROR] Error en detalle película: SQLSTATE[HY093]: Invalid parameter number
 [2025-06-11 14:47:25] [ERROR] Error en búsqueda: SQLSTATE[HY093]: Invalid parameter number
+[2025-06-11 20:42:29] [INFO] Usuario 1 creó película: Mad Max: Fury Roaad (ID: 9)
+[2025-06-11 20:45:12] [INFO] Usuario 1 dio like a reseña 7
+[2025-06-11 20:45:35] [INFO] Usuario 1 quitó like de reseña 7
+[2025-06-11 20:45:42] [INFO] Usuario 1 quitó like de reseña 7
+[2025-06-11 20:45:47] [INFO] Usuario 1 quitó like de reseña 3
+[2025-06-11 20:45:50] [INFO] Usuario 1 quitó like de reseña 3
+[2025-06-11 20:45:53] [INFO] Usuario 1 quitó like de reseña 4
+[2025-06-11 20:51:21] [INFO] Nuevo usuario registrado: holamundo (ID: 8)
+[2025-06-11 20:52:19] [INFO] Usuario 1 creó película: Hola (ID: 10)
+[2025-06-11 20:52:53] [INFO] Usuario 1 creó reseña para película 10 (ID: 13)

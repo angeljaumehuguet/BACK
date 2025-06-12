@@ -6,7 +6,7 @@ define('API_VERSION', 'v1');
 define('DEBUG_SQL', true);
 
 // configuración de jwt
-define('JWT_SECRET', 'cinefan_secret_key_2025_super_secure');
+define('JWT_SECRET', 'JuanAngelCineFan101003');
 define('JWT_ALGORITHM', 'HS256');
 define('JWT_EXPIRATION', 86400); // 24 horas
 
@@ -25,7 +25,7 @@ define('MAX_REVIEW_LENGTH', 1000);
 
 // configuración de logs
 define('ENABLE_LOGGING', true);
-define('LOG_LEVEL', 'INFO'); // DEBUG, INFO, WARNING, ERROR
+define('LOG_LEVEL', 'DEBUG');
 
 // zona horaria
 date_default_timezone_set('Europe/Madrid');
