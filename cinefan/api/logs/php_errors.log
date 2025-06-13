@@ -1,0 +1,127 @@
+[13-Jun-2025 06:52:23 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 06:52:26 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 06:52:26 Europe/Madrid] CineFan [ERROR]: Error en feed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cinefan_db.resenas_likes' doesn't exist
+[13-Jun-2025 06:52:26 Europe/Madrid] CineFan [ERROR]: API Error [500]: Error interno del servidor
+[13-Jun-2025 06:52:52 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 06:52:52 Europe/Madrid] CineFan [ERROR]: Error en feed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cinefan_db.resenas_likes' doesn't exist
+[13-Jun-2025 06:52:52 Europe/Madrid] CineFan [ERROR]: API Error [500]: Error interno del servidor
+[13-Jun-2025 06:53:39 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 06:53:39 Europe/Madrid] PHP Fatal error:  Uncaught Error: Call to undefined method Utils::timeAgo() in C:\xampp\htdocs\cinefan\api\peliculas\listar.php:153
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\cinefan\api\peliculas\listar.php on line 153
+[13-Jun-2025 06:54:07 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 06:54:07 Europe/Madrid] PHP Fatal error:  Uncaught Error: Call to undefined method Utils::timeAgo() in C:\xampp\htdocs\cinefan\api\peliculas\listar.php:153
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\cinefan\api\peliculas\listar.php on line 153
+[13-Jun-2025 06:54:30 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 06:54:30 Europe/Madrid] PHP Fatal error:  Uncaught Error: Call to undefined method Utils::timeAgo() in C:\xampp\htdocs\cinefan\api\peliculas\listar.php:153
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\cinefan\api\peliculas\listar.php on line 153
+[13-Jun-2025 06:55:07 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 06:55:07 Europe/Madrid] PHP Fatal error:  Uncaught Error: Call to undefined method Utils::timeAgo() in C:\xampp\htdocs\cinefan\api\peliculas\listar.php:153
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\cinefan\api\peliculas\listar.php on line 153
+[13-Jun-2025 06:55:08 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 06:55:08 Europe/Madrid] PHP Fatal error:  Uncaught Error: Call to undefined method Utils::timeAgo() in C:\xampp\htdocs\cinefan\api\resenas\listar.php:93
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\cinefan\api\resenas\listar.php on line 93
+[13-Jun-2025 06:55:28 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 06:55:28 Europe/Madrid] PHP Fatal error:  Uncaught Error: Call to undefined method Utils::timeAgo() in C:\xampp\htdocs\cinefan\api\peliculas\listar.php:153
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\cinefan\api\peliculas\listar.php on line 153
+[13-Jun-2025 06:55:34 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 06:55:34 Europe/Madrid] CineFan [ERROR]: Error en feed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cinefan_db.resenas_likes' doesn't exist
+[13-Jun-2025 06:55:34 Europe/Madrid] CineFan [ERROR]: API Error [500]: Error interno del servidor
+[13-Jun-2025 06:57:04 Europe/Madrid] Error de conexión a la base de datos: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[13-Jun-2025 06:57:04 Europe/Madrid] CineFan [ERROR]: Error verificando usuario en token: Error de conexión a la base de datos: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[13-Jun-2025 06:57:07 Europe/Madrid] Error de conexión a la base de datos: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[13-Jun-2025 06:57:07 Europe/Madrid] CineFan [ERROR]: Error verificando usuario en token: Error de conexión a la base de datos: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[13-Jun-2025 07:01:30 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:01:30 Europe/Madrid] PHP Fatal error:  Uncaught Error: Call to undefined method Utils::timeAgo() in C:\xampp\htdocs\cinefan\api\resenas\listar.php:93
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\cinefan\api\resenas\listar.php on line 93
+[13-Jun-2025 07:01:38 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:01:38 Europe/Madrid] CineFan [ERROR]: Error en feed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cinefan_db.resenas_likes' doesn't exist
+[13-Jun-2025 07:01:38 Europe/Madrid] CineFan [ERROR]: API Error [500]: Error interno del servidor
+[13-Jun-2025 07:01:41 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:01:41 Europe/Madrid] PHP Fatal error:  Uncaught Error: Call to undefined method Utils::timeAgo() in C:\xampp\htdocs\cinefan\api\peliculas\listar.php:153
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\cinefan\api\peliculas\listar.php on line 153
+[13-Jun-2025 07:02:25 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:02:25 Europe/Madrid] CineFan [ERROR]: Error en feed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cinefan_db.resenas_likes' doesn't exist
+[13-Jun-2025 07:02:25 Europe/Madrid] CineFan [ERROR]: API Error [500]: Error interno del servidor
+[13-Jun-2025 07:04:18 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:04:18 Europe/Madrid] CineFan [ERROR]: Error en feed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cinefan_db.resenas_likes' doesn't exist
+[13-Jun-2025 07:04:18 Europe/Madrid] CineFan [ERROR]: API Error [500]: Error interno del servidor
+[13-Jun-2025 07:04:21 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:04:21 Europe/Madrid] PHP Fatal error:  Uncaught Error: Call to undefined method Utils::timeAgo() in C:\xampp\htdocs\cinefan\api\peliculas\listar.php:153
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\cinefan\api\peliculas\listar.php on line 153
+[13-Jun-2025 07:04:54 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:04:54 Europe/Madrid] CineFan [ERROR]: Error en feed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cinefan_db.resenas_likes' doesn't exist
+[13-Jun-2025 07:04:54 Europe/Madrid] CineFan [ERROR]: API Error [500]: Error interno del servidor
+[13-Jun-2025 07:04:57 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:04:57 Europe/Madrid] PHP Fatal error:  Uncaught Error: Call to undefined method Utils::timeAgo() in C:\xampp\htdocs\cinefan\api\peliculas\listar.php:153
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\cinefan\api\peliculas\listar.php on line 153
+[13-Jun-2025 07:05:08 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:05:08 Europe/Madrid] PHP Fatal error:  Uncaught Error: Call to undefined method Utils::timeAgo() in C:\xampp\htdocs\cinefan\api\peliculas\listar.php:153
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\cinefan\api\peliculas\listar.php on line 153
+[13-Jun-2025 07:05:10 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:05:10 Europe/Madrid] CineFan [ERROR]: Error en feed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'r.fecha_creacion' in 'field list'
+[13-Jun-2025 07:05:10 Europe/Madrid] CineFan [ERROR]: API Error [500]: Error interno del servidor
+[13-Jun-2025 07:05:47 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:05:47 Europe/Madrid] PHP Fatal error:  Uncaught Error: Call to undefined method Utils::timeAgo() in C:\xampp\htdocs\cinefan\api\peliculas\listar.php:153
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\cinefan\api\peliculas\listar.php on line 153
+[13-Jun-2025 07:05:48 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:06:05 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:06:05 Europe/Madrid] CineFan [INFO]: Usuario 5 creó película: El Pepe (ID: 13)
+[13-Jun-2025 07:06:05 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:06:05 Europe/Madrid] PHP Fatal error:  Uncaught Error: Call to undefined method Utils::timeAgo() in C:\xampp\htdocs\cinefan\api\peliculas\listar.php:153
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\cinefan\api\peliculas\listar.php on line 153
+[13-Jun-2025 07:06:07 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:06:07 Europe/Madrid] PHP Fatal error:  Uncaught Error: Call to undefined method Utils::timeAgo() in C:\xampp\htdocs\cinefan\api\resenas\listar.php:93
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\cinefan\api\resenas\listar.php on line 93
+[13-Jun-2025 07:06:09 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:06:09 Europe/Madrid] PHP Fatal error:  Uncaught Error: Call to undefined method Utils::timeAgo() in C:\xampp\htdocs\cinefan\api\peliculas\listar.php:153
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\cinefan\api\peliculas\listar.php on line 153
+[13-Jun-2025 07:06:11 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:06:11 Europe/Madrid] CineFan [ERROR]: Error en feed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'r.fecha_creacion' in 'field list'
+[13-Jun-2025 07:06:11 Europe/Madrid] CineFan [ERROR]: API Error [500]: Error interno del servidor
+[13-Jun-2025 07:29:15 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:29:15 Europe/Madrid] CineFan [INFO]: Iniciando carga de feed - Usuario: 5, Página: 1
+[13-Jun-2025 07:29:15 Europe/Madrid] CineFan [INFO]: Feed cargado exitosamente - Usuario: 5, Reseñas: 10
+[13-Jun-2025 07:29:18 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:29:18 Europe/Madrid] CineFan [INFO]: Iniciando carga de feed - Usuario: 5, Página: 2
+[13-Jun-2025 07:29:18 Europe/Madrid] CineFan [INFO]: Feed cargado exitosamente - Usuario: 5, Reseñas: 2
+[13-Jun-2025 07:29:39 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:29:39 Europe/Madrid] CineFan [INFO]: Iniciando carga de feed - Usuario: 5, Página: 1
+[13-Jun-2025 07:29:39 Europe/Madrid] CineFan [INFO]: Feed cargado exitosamente - Usuario: 5, Reseñas: 10
+[13-Jun-2025 07:30:36 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:30:36 Europe/Madrid] PHP Fatal error:  Uncaught Error: Call to undefined method Utils::timeAgo() in C:\xampp\htdocs\cinefan\api\resenas\listar.php:93
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\cinefan\api\resenas\listar.php on line 93
+[13-Jun-2025 07:31:01 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:31:01 Europe/Madrid] CineFan [INFO]: Iniciando carga de feed - Usuario: 5, Página: 1
+[13-Jun-2025 07:31:01 Europe/Madrid] CineFan [INFO]: Feed cargado exitosamente - Usuario: 5, Reseñas: 10

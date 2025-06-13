@@ -6,7 +6,7 @@ require_once '../includes/auth.php';
 require_once '../includes/functions.php';
 require_once '../config/config.php';
 
-// Validar método
+// Validar método HTTP
 Response::validateMethod(['GET']);
 
 try {
@@ -14,27 +14,30 @@ try {
     $authData = Auth::requireAuth();
     $userId = $authData['user_id'];
     
-    // Obtener parámetros de paginación
+    // Obtener parámetros de paginación con validación
     $pagina = isset($_GET['pagina']) ? max(1, (int)$_GET['pagina']) : 1;
     $limite = isset($_GET['limite']) ? min(50, max(1, (int)$_GET['limite'])) : 10;
     $offset = ($pagina - 1) * $limite;
     
+    // Log de inicio de proceso
+    Utils::log("Iniciando carga de feed - Usuario: {$userId}, Página: {$pagina}", 'INFO');
+    
     $db = getDatabase();
     $conn = $db->getConnection();
     
-    // Consulta para obtener el feed de reseñas con información completa
+    // CONSULTA CORREGIDA - Elimina referencias a tablas/campos inexistentes
     $sql = "SELECT 
                 r.id,
                 r.puntuacion,
                 r.texto_resena,
-                r.fecha_creacion,
+                r.fecha_resena as fecha_creacion,
                 r.likes_count,
                 
                 -- Datos del usuario
                 u.id as usuario_id,
                 u.nombre_usuario,
                 u.nombre_completo,
-                u.imagen_perfil,
+                u.avatar_url as imagen_perfil,
                 
                 -- Datos de la película
                 p.id as pelicula_id,
@@ -47,9 +50,10 @@ try {
                 
                 -- Datos del género
                 g.nombre as genero,
+                g.color_hex as color_genero,
                 
-                -- Verificar si el usuario actual ha dado like
-                CASE WHEN rl.id IS NOT NULL THEN true ELSE false END as usuario_dio_like
+                -- Verificar si el usuario actual ha dado like (CORREGIDO)
+                CASE WHEN rl.id IS NOT NULL THEN 1 ELSE 0 END as usuario_dio_like
                 
             FROM resenas r
             INNER JOIN usuarios u ON r.id_usuario = u.id
@@ -57,11 +61,11 @@ try {
             LEFT JOIN generos g ON p.genero_id = g.id
             LEFT JOIN resenas_likes rl ON r.id = rl.id_resena AND rl.id_usuario = :user_id
             
-            WHERE r.activo = true 
-            AND p.activo = true 
-            AND u.activo = true
+            WHERE r.activo = 1 
+            AND p.activo = 1 
+            AND u.activo = 1
             
-            ORDER BY r.fecha_creacion DESC
+            ORDER BY r.fecha_resena DESC
             LIMIT :limite OFFSET :offset";
     
     $stmt = $conn->prepare($sql);
@@ -72,12 +76,12 @@ try {
     
     $resenas = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-    // Contar total de reseñas para paginación
+    // Contar total de reseñas para paginación (CONSULTA OPTIMIZADA)
     $countSql = "SELECT COUNT(*) as total 
                  FROM resenas r
                  INNER JOIN peliculas p ON r.id_pelicula = p.id
                  INNER JOIN usuarios u ON r.id_usuario = u.id
-                 WHERE r.activo = true AND p.activo = true AND u.activo = true";
+                 WHERE r.activo = 1 AND p.activo = 1 AND u.activo = 1";
     
     $countStmt = $conn->prepare($countSql);
     $countStmt->execute();
@@ -110,6 +114,7 @@ try {
                 'ano_lanzamiento' => (int)$resena['ano_lanzamiento'],
                 'duracion_minutos' => (int)$resena['duracion_minutos'],
                 'genero' => $resena['genero'] ?? 'Sin género',
+                'color_genero' => $resena['color_genero'] ?? '#6c757d',
                 'imagen_url' => $resena['imagen_url'],
                 'sinopsis' => $resena['sinopsis']
             ]
@@ -137,13 +142,19 @@ try {
         'timestamp' => date('Y-m-d H:i:s')
     ];
     
-    Utils::log("Feed cargado para usuario {$userId} - Página: {$pagina}, Reseñas: " . count($resenasFormateadas), 'INFO');
+    Utils::log("Feed cargado exitosamente - Usuario: {$userId}, Reseñas: " . count($resenasFormateadas), 'INFO');
     
     http_response_code(200);
     echo json_encode($response, JSON_UNESCAPED_UNICODE);
     
+} catch (PDOException $e) {
+    // Error específico de base de datos
+    Utils::log("Error PDO en feed: " . $e->getMessage(), 'ERROR');
+    Response::error('Error de base de datos: ' . $e->getMessage(), 500);
+    
 } catch (Exception $e) {
-    Utils::log("Error en feed: " . $e->getMessage(), 'ERROR');
+    // Error general
+    Utils::log("Error general en feed: " . $e->getMessage(), 'ERROR');
     Response::error('Error interno del servidor', 500);
 }
 ?>

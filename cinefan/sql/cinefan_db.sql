@@ -322,3 +322,99 @@ CREATE INDEX idx_favoritos_fecha ON favoritos(fecha_agregado);
 SET FOREIGN_KEY_CHECKS = 1;
 
 SELECT 'Base de datos CineFan creada exitosamente!' as mensaje;
+
+-- =====================================================
+-- CORRECCIÓN CRÍTICA DEL SCHEMA DE CINEFAN
+-- Soluciona errores HTTP 500 identificados en logs
+-- =====================================================
+
+USE cinefan_db;
+
+-- 1. CORREGIR TABLA RESENAS - Agregar columna faltante
+ALTER TABLE resenas 
+ADD COLUMN IF NOT EXISTS likes_count INT DEFAULT 0 AFTER likes;
+
+-- 2. CREAR TABLA RESENAS_LIKES (corregir nombre en PHP)
+CREATE TABLE IF NOT EXISTS resenas_likes (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    id_usuario INT NOT NULL,
+    id_resena INT NOT NULL,
+    fecha_like TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id) ON DELETE CASCADE,
+    FOREIGN KEY (id_resena) REFERENCES resenas(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_usuario_resena_like (id_usuario, id_resena),
+    INDEX idx_usuario_like (id_usuario),
+    INDEX idx_resena_like (id_resena)
+);
+
+-- 3. VERIFICAR Y CORREGIR TABLA LIKES_RESENAS
+-- Renombrar si existe la tabla con nombre incorrecto
+SET @table_exists = (
+    SELECT COUNT(*) FROM information_schema.tables 
+    WHERE table_schema = 'cinefan_db' AND table_name = 'likes_resenas'
+);
+
+-- Si likes_resenas existe, migrar datos a resenas_likes
+INSERT IGNORE INTO resenas_likes (id_usuario, id_resena, fecha_like)
+SELECT id_usuario, id_resena, fecha_like FROM likes_resenas 
+WHERE EXISTS (
+    SELECT 1 FROM information_schema.tables 
+    WHERE table_schema = 'cinefan_db' AND table_name = 'likes_resenas'
+);
+
+-- 4. ACTUALIZAR CONTADOR DE LIKES EN RESENAS
+UPDATE resenas r 
+SET likes_count = (
+    SELECT COUNT(*) FROM resenas_likes rl 
+    WHERE rl.id_resena = r.id
+);
+
+-- 5. AGREGAR ÍNDICES OPTIMIZADOS PARA RENDIMIENTO
+CREATE INDEX IF NOT EXISTS idx_resenas_feed ON resenas(activo, fecha_resena DESC);
+CREATE INDEX IF NOT EXISTS idx_peliculas_usuario ON peliculas(id_usuario_creador, activo);
+CREATE INDEX IF NOT EXISTS idx_usuarios_activo ON usuarios(activo, fecha_registro);
+
+-- 6. VERIFICAR INTEGRIDAD REFERENCIAL
+-- Eliminar registros huérfanos si existen
+DELETE FROM resenas WHERE id_usuario NOT IN (SELECT id FROM usuarios);
+DELETE FROM resenas WHERE id_pelicula NOT IN (SELECT id FROM peliculas);
+DELETE FROM resenas_likes WHERE id_usuario NOT IN (SELECT id FROM usuarios);
+DELETE FROM resenas_likes WHERE id_resena NOT IN (SELECT id FROM resenas);
+
+-- 7. ACTUALIZAR CONFIGURACIÓN MYSQL PARA RENDIMIENTO
+SET GLOBAL innodb_buffer_pool_size = 128M;
+SET GLOBAL query_cache_size = 16M;
+SET GLOBAL query_cache_type = ON;
+
+-- 8. VERIFICACIÓN FINAL
+SELECT 
+    'usuarios' as tabla, COUNT(*) as registros FROM usuarios
+UNION ALL
+SELECT 
+    'peliculas' as tabla, COUNT(*) as registros FROM peliculas
+UNION ALL
+SELECT 
+    'resenas' as tabla, COUNT(*) as registros FROM resenas
+UNION ALL
+SELECT 
+    'resenas_likes' as tabla, COUNT(*) as registros FROM resenas_likes;
+
+-- 9. CREAR DATOS DE PRUEBA SI NO EXISTEN
+INSERT IGNORE INTO generos (id, nombre, descripcion, color_hex) VALUES
+(1, 'Acción', 'Películas de acción y aventuras', '#dc3545'),
+(2, 'Comedia', 'Películas de humor y comedia', '#ffc107'),
+(3, 'Drama', 'Películas dramáticas', '#6f42c1'),
+(4, 'Ciencia Ficción', 'Películas de ciencia ficción', '#20c997'),
+(5, 'Terror', 'Películas de terror y suspense', '#fd7e14'),
+(6, 'Romance', 'Películas románticas', '#e83e8c');
+
+-- 10. OPTIMIZAR TABLAS
+OPTIMIZE TABLE usuarios;
+OPTIMIZE TABLE peliculas;
+OPTIMIZE TABLE resenas;
+OPTIMIZE TABLE resenas_likes;
+
+COMMIT;
+
+-- MENSAJE DE ÉXITO
+SELECT 'CORRECCIÓN CRÍTICA COMPLETADA EXITOSAMENTE' as resultado;
