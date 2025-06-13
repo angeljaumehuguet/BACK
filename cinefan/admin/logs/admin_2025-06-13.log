@@ -101,3 +101,24 @@
 [2025-06-13 12:46:37] [INFO] Sistema admin inicializado correctamente
 [2025-06-13 12:46:37] [INFO] Inicializacion completada exitosamente
 [2025-06-13 12:46:37] [INFO] Peticion API: resenas | Contexto: {"respuesta":true}
+[2025-06-13 12:57:04] [INFO] Sistema admin inicializado correctamente
+[2025-06-13 12:57:04] [INFO] Inicializacion completada exitosamente
+[2025-06-13 12:57:04] [INFO] Peticion API: estadisticas | Contexto: {"respuesta":true}
+[2025-06-13 12:57:06] [INFO] Sistema admin inicializado correctamente
+[2025-06-13 12:57:06] [INFO] Inicializacion completada exitosamente
+[2025-06-13 12:57:06] [INFO] Peticion API: usuarios | Contexto: {"respuesta":true}
+[2025-06-13 12:57:09] [INFO] Sistema admin inicializado correctamente
+[2025-06-13 12:57:09] [INFO] Inicializacion completada exitosamente
+[2025-06-13 12:57:09] [INFO] Peticion API: peliculas | Contexto: {"respuesta":true}
+[2025-06-13 12:57:09] [INFO] Sistema admin inicializado correctamente
+[2025-06-13 12:57:09] [INFO] Inicializacion completada exitosamente
+[2025-06-13 12:57:09] [INFO] Peticion API: generos | Contexto: {"respuesta":true}
+[2025-06-13 12:57:11] [INFO] Sistema admin inicializado correctamente
+[2025-06-13 12:57:11] [INFO] Inicializacion completada exitosamente
+[2025-06-13 12:57:12] [INFO] Peticion API: resenas | Contexto: {"respuesta":true}
+[2025-06-13 12:57:13] [INFO] Sistema admin inicializado correctamente
+[2025-06-13 12:57:13] [INFO] Inicializacion completada exitosamente
+[2025-06-13 12:57:13] [INFO] Peticion API: resenas | Contexto: {"respuesta":true}
+[2025-06-13 12:57:14] [INFO] Sistema admin inicializado correctamente
+[2025-06-13 12:57:14] [INFO] Inicializacion completada exitosamente
+[2025-06-13 12:57:14] [INFO] Peticion API: resenas | Contexto: {"respuesta":true}

@@ -149,3 +149,68 @@
 [13-Jun-2025 10:59:02 Europe/Madrid] CineFan [INFO]: Listando películas - Usuario: 5, Página: 1
 [13-Jun-2025 10:59:02 Europe/Madrid] CineFan [INFO]: Películas listadas exitosamente - Usuario: 5, Total: 13
 [13-Jun-2025 10:59:04 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 11:36:47 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 11:36:47 Europe/Madrid] CineFan [INFO]: Listando películas - Usuario: 5, Página: 1
+[13-Jun-2025 11:36:47 Europe/Madrid] CineFan [INFO]: Películas listadas exitosamente - Usuario: 5, Total: 13
+[13-Jun-2025 11:36:51 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 11:36:55 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 11:37:10 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 11:37:21 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 11:37:21 Europe/Madrid] CineFan [INFO]: Usuario autenticado: ID=5
+[13-Jun-2025 11:37:21 Europe/Madrid] CineFan [DEBUG]: Input recibido: {"id":12,"titulo":"La Pel\u00edcula Del Joselito","director":"Joselito Production","ano_lanzamiento":2024,"duracion_minutos":69,"genero_id":4,"imagen_url":"https:\/\/www.institutjaumehuguet.cat\/images\/noticies\/2024-25_3_FINS_FINAL_DE_CURS\/2025-06-04_Talent_jove_\/2025-06-04_Talent_jove_02.jpg"}
+[13-Jun-2025 11:37:21 Europe/Madrid] CineFan [INFO]: Procesando edición de película ID: 12
+[13-Jun-2025 11:37:21 Europe/Madrid] CineFan [DEBUG]: Campo a actualizar: titulo = 'La Película Del Joselito'
+[13-Jun-2025 11:37:21 Europe/Madrid] CineFan [DEBUG]: Campo a actualizar: director = 'Joselito Production'
+[13-Jun-2025 11:37:21 Europe/Madrid] CineFan [DEBUG]: Campo a actualizar: ano_lanzamiento = '2024'
+[13-Jun-2025 11:37:21 Europe/Madrid] CineFan [DEBUG]: Campo a actualizar: genero_id = '4'
+[13-Jun-2025 11:37:21 Europe/Madrid] CineFan [DEBUG]: Campo a actualizar: duracion_minutos = '69'
+[13-Jun-2025 11:37:21 Europe/Madrid] CineFan [DEBUG]: Campo a actualizar: imagen_url = 'https://www.institutjaumehuguet.cat/images/noticies/2024-25_3_FINS_FINAL_DE_CURS/2025-06-04_Talent_jove_/2025-06-04_Talent_jove_02.jpg'
+[13-Jun-2025 11:37:21 Europe/Madrid] CineFan [INFO]: Género válido: Drama
+[13-Jun-2025 11:37:21 Europe/Madrid] CineFan [DEBUG]: Agregando fecha_modificacion al UPDATE
+[13-Jun-2025 11:37:21 Europe/Madrid] CineFan [DEBUG]: SQL: UPDATE peliculas 
+                  SET titulo = ?, director = ?, ano_lanzamiento = ?, genero_id = ?, duracion_minutos = ?, imagen_url = ?, fecha_modificacion = NOW()
+                  WHERE id = ?
+[13-Jun-2025 11:37:21 Europe/Madrid] CineFan [DEBUG]: Parámetros: ["La Pel\u00edcula Del Joselito","Joselito Production",2024,4,69,"https:\/\/www.institutjaumehuguet.cat\/images\/noticies\/2024-25_3_FINS_FINAL_DE_CURS\/2025-06-04_Talent_jove_\/2025-06-04_Talent_jove_02.jpg",12]
+[13-Jun-2025 11:37:21 Europe/Madrid] CineFan [INFO]: Actualización exitosa. Filas afectadas: 1
+[13-Jun-2025 11:37:21 Europe/Madrid] CineFan [INFO]: Usuario 5 actualizó película: La Película Del Joselito (ID: 12)
+[13-Jun-2025 11:37:21 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 11:37:21 Europe/Madrid] CineFan [INFO]: Listando películas - Usuario: 5, Página: 1
+[13-Jun-2025 11:37:21 Europe/Madrid] CineFan [INFO]: Películas listadas exitosamente - Usuario: 5, Total: 13
+[13-Jun-2025 11:37:24 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 11:37:34 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 11:37:34 Europe/Madrid] CineFan [INFO]: Iniciando carga de feed - Usuario: 5, Página: 1
+[13-Jun-2025 11:37:34 Europe/Madrid] CineFan [INFO]: Feed cargado exitosamente - Usuario: 5, Reseñas: 10
+[13-Jun-2025 11:37:38 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 11:37:38 Europe/Madrid] CineFan [INFO]: Iniciando carga de feed - Usuario: 5, Página: 2
+[13-Jun-2025 11:37:38 Europe/Madrid] CineFan [INFO]: Feed cargado exitosamente - Usuario: 5, Reseñas: 2
+[13-Jun-2025 11:37:57 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 11:37:57 Europe/Madrid] CineFan [ERROR]: API Error [404]: Usuario no encontrado
+[13-Jun-2025 11:38:04 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 11:38:06 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 11:38:06 Europe/Madrid] CineFan [INFO]: Iniciando carga de feed - Usuario: 9, Página: 1
+[13-Jun-2025 11:38:06 Europe/Madrid] CineFan [INFO]: Feed cargado exitosamente - Usuario: 9, Reseñas: 10
+[13-Jun-2025 11:38:07 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 11:38:07 Europe/Madrid] CineFan [INFO]: Iniciando carga de feed - Usuario: 9, Página: 2
+[13-Jun-2025 11:38:07 Europe/Madrid] CineFan [INFO]: Feed cargado exitosamente - Usuario: 9, Reseñas: 2
+[13-Jun-2025 11:45:25 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 11:45:27 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 11:45:27 Europe/Madrid] CineFan [INFO]: Iniciando carga de feed - Usuario: 9, Página: 1
+[13-Jun-2025 11:45:27 Europe/Madrid] CineFan [INFO]: Feed cargado exitosamente - Usuario: 9, Reseñas: 10
+[13-Jun-2025 11:45:28 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 11:45:28 Europe/Madrid] CineFan [INFO]: Listando películas - Usuario: 9, Página: 1
+[13-Jun-2025 11:45:28 Europe/Madrid] CineFan [INFO]: Películas listadas exitosamente - Usuario: 9, Total: 13
+[13-Jun-2025 11:45:38 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 11:45:38 Europe/Madrid] CineFan [INFO]: Listando películas - Usuario: 9, Página: 1
+[13-Jun-2025 11:45:38 Europe/Madrid] CineFan [INFO]: Películas listadas exitosamente - Usuario: 9, Total: 13
+[13-Jun-2025 11:45:39 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 11:45:39 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 11:45:39 Europe/Madrid] CineFan [INFO]: Listando películas - Usuario: 9, Página: 1
+[13-Jun-2025 11:45:39 Europe/Madrid] CineFan [INFO]: Películas listadas exitosamente - Usuario: 9, Total: 13
+[13-Jun-2025 11:45:45 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 11:56:11 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 11:56:11 Europe/Madrid] CineFan [INFO]: Iniciando carga de feed - Usuario: 9, Página: 1
+[13-Jun-2025 11:56:11 Europe/Madrid] CineFan [INFO]: Feed cargado exitosamente - Usuario: 9, Reseñas: 10
+[13-Jun-2025 11:56:14 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 11:56:14 Europe/Madrid] CineFan [INFO]: Listando películas - Usuario: 9, Página: 1
+[13-Jun-2025 11:56:14 Europe/Madrid] CineFan [INFO]: Películas listadas exitosamente - Usuario: 9, Total: 13
+[13-Jun-2025 11:56:18 Europe/Madrid] Conexión a base de datos establecida exitosamente
