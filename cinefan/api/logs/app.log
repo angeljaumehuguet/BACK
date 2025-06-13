@@ -50,3 +50,9 @@
 [2025-06-13 00:59:02] [ERROR] Error en listar películas: Error de conexión a la base de datos: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
 [2025-06-13 00:59:04] [ERROR] Error en listar películas: Error de conexión a la base de datos: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
 [2025-06-13 01:03:58] [INFO] Usuario 5 creó reseña para película 11 (ID: 14)
+[2025-06-13 05:29:09] [INFO] Usuario 5 creó película: La Película Del Joselito (ID: 12)
+[2025-06-13 05:30:54] [INFO] Usuario 5 creó reseña para película 12 (ID: 15)
+[2025-06-13 06:32:34] [INFO] Nuevo usuario registrado: juan (ID: 9)
+[2025-06-13 06:41:18] [ERROR] Error en feed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cinefan_db.resenas_likes' doesn't exist
+[2025-06-13 06:41:47] [ERROR] Error en editar película: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'fecha_modificacion' in 'field list'
+[2025-06-13 06:44:30] [ERROR] Error en editar reseña: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'fecha_modificacion' in 'field list'

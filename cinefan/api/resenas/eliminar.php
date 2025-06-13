@@ -14,8 +14,23 @@ try {
     $authData = Auth::requireAuth();
     $userId = $authData['user_id'];
     
-    // obtener ID de la reseña
-    $resenaId = isset($_GET['id']) ? (int)$_GET['id'] : null;
+    // Obtener ID desde URL o desde JSON body
+    $resenaId = null;
+    
+    // Primero intentar desde URL (?id=X)
+    if (isset($_GET['id'])) {
+        $resenaId = (int)$_GET['id'];
+    }
+    // Si no está en URL, intentar desde JSON body
+    else {
+        $input = file_get_contents('php://input');
+        if (!empty($input)) {
+            $data = json_decode($input, true);
+            if (json_last_error() === JSON_ERROR_NONE && isset($data['id'])) {
+                $resenaId = (int)$data['id'];
+            }
+        }
+    }
     
     if (!$resenaId) {
         Response::error('ID de reseña requerido', 400);
@@ -55,3 +70,4 @@ try {
     Utils::log("Error en eliminar reseña: " . $e->getMessage(), 'ERROR');
     Response::error('Error interno del servidor', 500);
 }
+?>

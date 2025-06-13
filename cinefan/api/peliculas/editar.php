@@ -14,18 +14,27 @@ try {
     $authData = Auth::requireAuth();
     $userId = $authData['user_id'];
     
-    // obtener ID de la película desde la URL
-    $peliculaId = isset($_GET['id']) ? (int)$_GET['id'] : null;
-    
-    if (!$peliculaId) {
-        Response::error('ID de película requerido', 400);
-    }
-    
     // obtener datos de entrada
     $input = Response::getJsonInput();
     
     if (empty($input)) {
         Response::error('Datos requeridos para actualizar', 400);
+    }
+    
+    // Obtener ID desde URL o desde JSON body
+    $peliculaId = null;
+    
+    // Primero intentar desde URL (?id=X)
+    if (isset($_GET['id'])) {
+        $peliculaId = (int)$_GET['id'];
+    }
+    // Si no está en URL, intentar desde JSON body
+    elseif (isset($input['id'])) {
+        $peliculaId = (int)$input['id'];
+    }
+    
+    if (!$peliculaId) {
+        Response::error('ID de película requerido', 400);
     }
     
     $db = getDatabase();
@@ -98,38 +107,57 @@ try {
         }
     }
     
+    // Agregar fecha de modificación
+    $datosActualizar[] = "fecha_modificacion = NOW()";
+    
     // construir y ejecutar consulta de actualización
     $updateSql = "UPDATE peliculas 
-                  SET " . implode(', ', $datosActualizar) . ", fecha_actualizacion = NOW() 
+                  SET " . implode(', ', $datosActualizar) . "
                   WHERE id = :id";
     
     $updateStmt = $conn->prepare($updateSql);
-    $result = $updateStmt->execute($parametros);
     
-    if (!$result) {
-        Response::error('Error al actualizar película', 500);
+    foreach ($parametros as $param => $value) {
+        $updateStmt->bindValue($param, $value);
     }
     
-    // obtener datos actualizados
-    $peliculaActualizadaSql = "SELECT p.id, p.titulo, p.director, p.ano_lanzamiento, 
-                                     p.duracion_minutos, p.sinopsis, p.imagen_url, 
-                                     p.fecha_creacion, p.fecha_actualizacion,
-                                     g.nombre as genero, g.id as genero_id,
-                                     u.nombre_usuario as creador
-                               FROM peliculas p
-                               INNER JOIN generos g ON p.genero_id = g.id
-                               INNER JOIN usuarios u ON p.id_usuario_creador = u.id
-                               WHERE p.id = :id";
-    
-    $stmt = $conn->prepare($peliculaActualizadaSql);
-    $stmt->bindParam(':id', $peliculaId);
-    $stmt->execute();
-    
-    $peliculaActualizada = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-    Response::success($peliculaActualizada, 'Película actualizada exitosamente');
+    if ($updateStmt->execute()) {
+        // obtener datos actualizados
+        $selectSql = "SELECT p.*, g.nombre as genero_nombre 
+                      FROM peliculas p
+                      LEFT JOIN generos g ON p.genero_id = g.id
+                      WHERE p.id = :id";
+        
+        $selectStmt = $conn->prepare($selectSql);
+        $selectStmt->bindParam(':id', $peliculaId);
+        $selectStmt->execute();
+        
+        $peliculaActualizada = $selectStmt->fetch(PDO::FETCH_ASSOC);
+        
+        Utils::log("Usuario {$userId} actualizó película: {$peliculaActualizada['titulo']} (ID: {$peliculaId})", 'INFO');
+        
+        // Formatear respuesta
+        $response = [
+            'id' => (int)$peliculaActualizada['id'],
+            'titulo' => $peliculaActualizada['titulo'],
+            'director' => $peliculaActualizada['director'],
+            'ano_lanzamiento' => (int)$peliculaActualizada['ano_lanzamiento'],
+            'duracion_minutos' => (int)$peliculaActualizada['duracion_minutos'],
+            'genero' => $peliculaActualizada['genero_nombre'] ?? 'Sin género',
+            'sinopsis' => $peliculaActualizada['sinopsis'],
+            'imagen_url' => $peliculaActualizada['imagen_url'],
+            'fecha_creacion' => $peliculaActualizada['fecha_creacion'],
+            'fecha_modificacion' => $peliculaActualizada['fecha_modificacion']
+        ];
+        
+        Response::success($response, 'Película actualizada exitosamente');
+        
+    } else {
+        Response::error('Error al actualizar la película', 500);
+    }
     
 } catch (Exception $e) {
-    Utils::log("Error editando película: " . $e->getMessage(), 'ERROR');
+    Utils::log("Error en editar película: " . $e->getMessage(), 'ERROR');
     Response::error('Error interno del servidor', 500);
 }
+?>

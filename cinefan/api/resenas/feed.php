@@ -4,171 +4,143 @@ require_once '../config/database.php';
 require_once '../includes/response.php';
 require_once '../includes/auth.php';
 require_once '../includes/functions.php';
-require_once '../includes/utils.php';
 require_once '../config/config.php';
 
-// validar método
+// Validar método
 Response::validateMethod(['GET']);
 
 try {
-    // autenticación requerida
+    // Autenticación requerida
     $authData = Auth::requireAuth();
     $userId = $authData['user_id'];
     
-    // parámetros de consulta
+    // Obtener parámetros de paginación
     $pagina = isset($_GET['pagina']) ? max(1, (int)$_GET['pagina']) : 1;
-    $limite = isset($_GET['limite']) ? min(50, max(1, (int)$_GET['limite'])) : DEFAULT_PAGE_SIZE;
-    $tipo = isset($_GET['tipo']) ? $_GET['tipo'] : 'todos'; // todos, siguiendo, recientes, mis_resenas
-    $genero = isset($_GET['genero']) ? (int)$_GET['genero'] : null;
-    
+    $limite = isset($_GET['limite']) ? min(50, max(1, (int)$_GET['limite'])) : 10;
     $offset = ($pagina - 1) * $limite;
     
     $db = getDatabase();
     $conn = $db->getConnection();
     
-    // construir consulta base con todos los datos necesarios
-    $sql = "SELECT r.id, r.puntuacion, r.titulo as titulo_resena, r.texto_resena, 
-               r.fecha_resena, r.likes, r.es_spoiler,
-               u.id as usuario_id, u.nombre_usuario, u.nombre_completo, u.avatar_url,
-               p.id as pelicula_id, p.titulo as pelicula_titulo, p.director, 
-               p.ano_lanzamiento, p.imagen_url as pelicula_imagen,
-               g.nombre as genero, g.color_hex as color_genero,
-               CASE WHEN lr.id IS NOT NULL THEN 1 ELSE 0 END as usuario_dio_like,
-               CASE WHEN f.id IS NOT NULL THEN 1 ELSE 0 END as pelicula_es_favorita
-        FROM resenas r
-        INNER JOIN usuarios u ON r.id_usuario = u.id
-        INNER JOIN peliculas p ON r.id_pelicula = p.id
-        INNER JOIN generos g ON p.genero_id = g.id
-        LEFT JOIN likes_resenas lr ON r.id = lr.id_resena AND lr.id_usuario = ?
-        LEFT JOIN favoritos f ON p.id = f.id_pelicula AND f.id_usuario = ?";
-    
-    // parámetros base
-    $params = [$userId, $userId];
-    
-    // condiciones base
-    $conditions = ["r.activo = 1", "u.activo = 1", "p.activo = 1"];
-    
-    // filtro por tipo de feed
-    switch ($tipo) {
-        case 'siguiendo':
-            $sql .= " INNER JOIN seguimientos s ON r.id_usuario = s.id_seguido 
-                      AND s.id_seguidor = ? AND s.activo = 1";
-            $params[] = $userId;
-            break;
-        case 'mis_resenas':
-            $conditions[] = "r.id_usuario = ?";
-            $params[] = $userId;
-            break;
-        case 'recientes':
-            $conditions[] = "r.fecha_resena >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
-            break;
-        // 'todos' no requiere filtro adicional
-    }
-    
-    // filtro por género
-    if ($genero) {
-        $conditions[] = "p.genero_id = ?";
-        $params[] = $genero;
-    }
-    
-    // agregar condiciones
-    if (!empty($conditions)) {
-        $sql .= " WHERE " . implode(' AND ', $conditions);
-    }
-    
-    $sql .= " ORDER BY r.fecha_resena DESC";
-    
-    // consulta de conteo para paginación
-    $countSql = "SELECT COUNT(DISTINCT r.id) as total
-                 FROM resenas r
-                 INNER JOIN usuarios u ON r.id_usuario = u.id
-                 INNER JOIN peliculas p ON r.id_pelicula = p.id
-                 INNER JOIN generos g ON p.genero_id = g.id";
-    
-    // aplicar los mismos filtros para el conteo
-    $countParams = [$userId, $userId]; // para los LEFT JOIN
-    
-    switch ($tipo) {
-        case 'siguiendo':
-            $countSql .= " INNER JOIN seguimientos s ON r.id_usuario = s.id_seguido 
-                           AND s.id_seguidor = ? AND s.activo = 1";
-            $countParams[] = $userId;
-            break;
-        case 'mis_resenas':
-            $conditions[count($conditions) - 1] = "r.id_usuario = ?";
-            $countParams[] = $userId;
-            break;
-    }
-    
-    if ($genero) {
-        $countParams[] = $genero;
-    }
-    
-    if (!empty($conditions)) {
-        $countSql .= " WHERE " . implode(' AND ', $conditions);
-    }
-    
-    $countStmt = $conn->prepare($countSql);
-    $countStmt->execute($countParams);
-    $totalElementos = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
-    
-    // obtener datos paginados
-    $sql .= " LIMIT ? OFFSET ?";
-    $params[] = $limite;
-    $params[] = $offset;
+    // Consulta para obtener el feed de reseñas con información completa
+    $sql = "SELECT 
+                r.id,
+                r.puntuacion,
+                r.texto_resena,
+                r.fecha_creacion,
+                r.likes_count,
+                
+                -- Datos del usuario
+                u.id as usuario_id,
+                u.nombre_usuario,
+                u.nombre_completo,
+                u.imagen_perfil,
+                
+                -- Datos de la película
+                p.id as pelicula_id,
+                p.titulo,
+                p.director,
+                p.ano_lanzamiento,
+                p.duracion_minutos,
+                p.imagen_url,
+                p.sinopsis,
+                
+                -- Datos del género
+                g.nombre as genero,
+                
+                -- Verificar si el usuario actual ha dado like
+                CASE WHEN rl.id IS NOT NULL THEN true ELSE false END as usuario_dio_like
+                
+            FROM resenas r
+            INNER JOIN usuarios u ON r.id_usuario = u.id
+            INNER JOIN peliculas p ON r.id_pelicula = p.id
+            LEFT JOIN generos g ON p.genero_id = g.id
+            LEFT JOIN resenas_likes rl ON r.id = rl.id_resena AND rl.id_usuario = :user_id
+            
+            WHERE r.activo = true 
+            AND p.activo = true 
+            AND u.activo = true
+            
+            ORDER BY r.fecha_creacion DESC
+            LIMIT :limite OFFSET :offset";
     
     $stmt = $conn->prepare($sql);
-    $stmt->execute($params);
+    $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+    $stmt->bindParam(':limite', $limite, PDO::PARAM_INT);
+    $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+    $stmt->execute();
+    
     $resenas = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-    // formatear datos para la respuesta
-    foreach ($resenas as &$resena) {
-        // formatear fecha
-        $resena['fecha_formateada'] = Utils::timeAgo($resena['fecha_resena']);
-        
-        // convertir a boolean
-        $resena['usuario_dio_like'] = (bool)$resena['usuario_dio_like'];
-        $resena['pelicula_es_favorita'] = (bool)$resena['pelicula_es_favorita'];
-        $resena['es_spoiler'] = (bool)$resena['es_spoiler'];
-        
-        // texto preview
-        $resena['texto_preview'] = strlen($resena['texto_resena']) > 200 
-            ? substr($resena['texto_resena'], 0, 200) . '...' 
-            : $resena['texto_resena'];
-        
-        // formatear puntuación
-        $resena['puntuacion'] = (float)$resena['puntuacion'];
-        
-        // formatear likes
-        $resena['likes'] = (int)$resena['likes'];
-        
-        // información del usuario
-        $resena['usuario'] = [
-            'id' => (int)$resena['usuario_id'],
-            'nombre_usuario' => $resena['nombre_usuario'],
-            'nombre_completo' => $resena['nombre_completo'],
-            'avatar_url' => $resena['avatar_url']
+    // Contar total de reseñas para paginación
+    $countSql = "SELECT COUNT(*) as total 
+                 FROM resenas r
+                 INNER JOIN peliculas p ON r.id_pelicula = p.id
+                 INNER JOIN usuarios u ON r.id_usuario = u.id
+                 WHERE r.activo = true AND p.activo = true AND u.activo = true";
+    
+    $countStmt = $conn->prepare($countSql);
+    $countStmt->execute();
+    $totalResenas = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
+    
+    // Formatear datos para respuesta
+    $resenasFormateadas = [];
+    foreach ($resenas as $resena) {
+        $resenasFormateadas[] = [
+            'id' => (int)$resena['id'],
+            'puntuacion' => (int)$resena['puntuacion'],
+            'texto_resena' => $resena['texto_resena'],
+            'fecha_creacion' => $resena['fecha_creacion'],
+            'likes_count' => (int)$resena['likes_count'],
+            'usuario_dio_like' => (bool)$resena['usuario_dio_like'],
+            
+            // Información del usuario
+            'usuario' => [
+                'id' => (int)$resena['usuario_id'],
+                'nombre_usuario' => $resena['nombre_usuario'],
+                'nombre_completo' => $resena['nombre_completo'],
+                'imagen_perfil' => $resena['imagen_perfil']
+            ],
+            
+            // Información de la película
+            'pelicula' => [
+                'id' => (int)$resena['pelicula_id'],
+                'titulo' => $resena['titulo'],
+                'director' => $resena['director'],
+                'ano_lanzamiento' => (int)$resena['ano_lanzamiento'],
+                'duracion_minutos' => (int)$resena['duracion_minutos'],
+                'genero' => $resena['genero'] ?? 'Sin género',
+                'imagen_url' => $resena['imagen_url'],
+                'sinopsis' => $resena['sinopsis']
+            ]
         ];
-        
-        // información de la película
-        $resena['pelicula'] = [
-            'id' => (int)$resena['pelicula_id'],
-            'titulo' => $resena['pelicula_titulo'],
-            'director' => $resena['director'],
-            'ano_lanzamiento' => (int)$resena['ano_lanzamiento'],
-            'imagen_url' => $resena['pelicula_imagen'],
-            'genero' => $resena['genero'],
-            'color_genero' => $resena['color_genero']
-        ];
-        
-        // limpiar campos duplicados
-        unset($resena['usuario_id'], $resena['nombre_usuario'], $resena['nombre_completo'], $resena['avatar_url']);
-        unset($resena['pelicula_id'], $resena['pelicula_titulo'], $resena['director'], 
-              $resena['ano_lanzamiento'], $resena['pelicula_imagen'], $resena['genero'], 
-              $resena['color_genero']);
     }
     
-    Response::paginated($resenas, $pagina, $totalElementos, $limite, 'Feed obtenido exitosamente');
+    // Calcular información de paginación
+    $totalPaginas = ceil($totalResenas / $limite);
+    $tieneSiguiente = $pagina < $totalPaginas;
+    $tieneAnterior = $pagina > 1;
+    
+    // Respuesta exitosa con datos de paginación
+    $response = [
+        'exito' => true,
+        'mensaje' => 'Feed obtenido exitosamente',
+        'datos' => $resenasFormateadas,
+        'paginacion' => [
+            'pagina_actual' => $pagina,
+            'total_paginas' => $totalPaginas,
+            'total_elementos' => (int)$totalResenas,
+            'elementos_por_pagina' => $limite,
+            'tiene_siguiente' => $tieneSiguiente,
+            'tiene_anterior' => $tieneAnterior
+        ],
+        'timestamp' => date('Y-m-d H:i:s')
+    ];
+    
+    Utils::log("Feed cargado para usuario {$userId} - Página: {$pagina}, Reseñas: " . count($resenasFormateadas), 'INFO');
+    
+    http_response_code(200);
+    echo json_encode($response, JSON_UNESCAPED_UNICODE);
     
 } catch (Exception $e) {
     Utils::log("Error en feed: " . $e->getMessage(), 'ERROR');
