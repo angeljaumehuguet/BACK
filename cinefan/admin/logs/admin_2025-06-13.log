@@ -1,0 +1,62 @@
+[2025-06-13 03:33:05] [INFO] Sistema admin inicializado correctamente
+[2025-06-13 03:33:05] [INFO] Inicializacion completada exitosamente
+[2025-06-13 03:33:06] [INFO] Sistema admin inicializado correctamente
+[2025-06-13 03:33:06] [INFO] Inicializacion completada exitosamente
+[2025-06-13 03:33:06] [INFO] Peticion API: estadisticas | Contexto: {"respuesta":true}
+[2025-06-13 03:33:14] [INFO] Sistema admin inicializado correctamente
+[2025-06-13 03:33:14] [INFO] Inicializacion completada exitosamente
+[2025-06-13 03:33:14] [INFO] Peticion API: usuarios | Contexto: {"respuesta":true}
+[2025-06-13 03:33:28] [INFO] Sistema admin inicializado correctamente
+[2025-06-13 03:33:28] [INFO] Inicializacion completada exitosamente
+[2025-06-13 03:33:28] [INFO] Generando reporte PDF usuarios
+[2025-06-13 03:33:28] [WARNING] TCPDF no disponible, usando respaldo HTML
+[2025-06-13 03:33:28] [INFO] PDF generado: usuarios
+[2025-06-13 03:34:46] [INFO] Sistema admin inicializado correctamente
+[2025-06-13 03:34:46] [INFO] Inicializacion completada exitosamente
+[2025-06-13 03:34:46] [INFO] Peticion API: generos | Contexto: {"respuesta":true}
+[2025-06-13 03:34:46] [INFO] Sistema admin inicializado correctamente
+[2025-06-13 03:34:46] [INFO] Inicializacion completada exitosamente
+[2025-06-13 03:34:46] [INFO] Peticion API: peliculas | Contexto: {"respuesta":true}
+[2025-06-13 03:34:59] [INFO] Sistema admin inicializado correctamente
+[2025-06-13 03:34:59] [INFO] Inicializacion completada exitosamente
+[2025-06-13 03:34:59] [INFO] Peticion API: peliculas | Contexto: {"respuesta":true}
+[2025-06-13 03:35:00] [INFO] Sistema admin inicializado correctamente
+[2025-06-13 03:35:00] [INFO] Inicializacion completada exitosamente
+[2025-06-13 03:35:00] [INFO] Peticion API: peliculas | Contexto: {"respuesta":true}
+[2025-06-13 03:35:02] [INFO] Sistema admin inicializado correctamente
+[2025-06-13 03:35:02] [INFO] Inicializacion completada exitosamente
+[2025-06-13 03:35:02] [INFO] Generando reporte PDF peliculas
+[2025-06-13 03:35:02] [WARNING] TCPDF no disponible, usando respaldo HTML
+[2025-06-13 03:35:02] [INFO] PDF generado: peliculas
+[2025-06-13 03:35:06] [INFO] Sistema admin inicializado correctamente
+[2025-06-13 03:35:06] [INFO] Inicializacion completada exitosamente
+[2025-06-13 03:35:06] [ERROR] Error API: Error en consulta: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'r.fecha_creacion' in 'order clause'
+[2025-06-13 03:35:15] [INFO] Sistema admin inicializado correctamente
+[2025-06-13 03:35:15] [INFO] Inicializacion completada exitosamente
+[2025-06-13 03:35:15] [ERROR] Error API: Error en consulta: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'r.comentario' in 'where clause'
+[2025-06-13 03:35:20] [INFO] Sistema admin inicializado correctamente
+[2025-06-13 03:35:20] [INFO] Inicializacion completada exitosamente
+[2025-06-13 03:35:20] [ERROR] Error API: Error en consulta: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'r.comentario' in 'where clause'
+[2025-06-13 03:35:22] [INFO] Sistema admin inicializado correctamente
+[2025-06-13 03:35:22] [INFO] Inicializacion completada exitosamente
+[2025-06-13 03:35:22] [ERROR] Error API: Error en consulta: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'r.comentario' in 'where clause'
+[2025-06-13 03:35:23] [INFO] Sistema admin inicializado correctamente
+[2025-06-13 03:35:23] [INFO] Inicializacion completada exitosamente
+[2025-06-13 03:35:23] [ERROR] Error API: Error en consulta: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'r.comentario' in 'where clause'
+[2025-06-13 03:35:25] [INFO] Sistema admin inicializado correctamente
+[2025-06-13 03:35:25] [INFO] Inicializacion completada exitosamente
+[2025-06-13 03:35:25] [INFO] Generando reporte PDF resenas
+[2025-06-13 03:35:25] [ERROR] Error generando PDF: Error en consulta: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'r.fecha_creacion' in 'order clause'
+[2025-06-13 03:36:38] [INFO] Sistema admin inicializado correctamente
+[2025-06-13 03:36:38] [INFO] Inicializacion completada exitosamente
+[2025-06-13 03:36:38] [INFO] Peticion API: estadisticas | Contexto: {"respuesta":true}
+[2025-06-13 03:36:44] [INFO] Sistema admin inicializado correctamente
+[2025-06-13 03:36:44] [INFO] Inicializacion completada exitosamente
+[2025-06-13 03:36:44] [INFO] Sistema admin inicializado correctamente
+[2025-06-13 03:36:44] [INFO] Inicializacion completada exitosamente
+[2025-06-13 03:36:44] [INFO] Peticion API: estadisticas | Contexto: {"respuesta":true}
+[2025-06-13 03:36:50] [INFO] Sistema admin inicializado correctamente
+[2025-06-13 03:36:50] [INFO] Inicializacion completada exitosamente
+[2025-06-13 03:36:50] [INFO] Sistema admin inicializado correctamente
+[2025-06-13 03:36:50] [INFO] Inicializacion completada exitosamente
+[2025-06-13 03:36:50] [INFO] Peticion API: estadisticas | Contexto: {"respuesta":true}
