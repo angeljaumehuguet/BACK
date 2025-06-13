@@ -125,3 +125,87 @@ Stack trace:
 [13-Jun-2025 07:31:01 Europe/Madrid] Conexión a base de datos establecida exitosamente
 [13-Jun-2025 07:31:01 Europe/Madrid] CineFan [INFO]: Iniciando carga de feed - Usuario: 5, Página: 1
 [13-Jun-2025 07:31:01 Europe/Madrid] CineFan [INFO]: Feed cargado exitosamente - Usuario: 5, Reseñas: 10
+[13-Jun-2025 07:48:24 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:48:24 Europe/Madrid] CineFan [INFO]: Listando películas - Usuario: 5, Página: 1
+[13-Jun-2025 07:48:24 Europe/Madrid] CineFan [INFO]: Películas listadas exitosamente - Usuario: 5, Total: 13
+[13-Jun-2025 07:48:30 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:48:45 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:48:45 Europe/Madrid] CineFan [ERROR]: Error en editar película: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'fecha_modificacion' in 'field list'
+[13-Jun-2025 07:48:45 Europe/Madrid] CineFan [ERROR]: API Error [500]: Error interno del servidor
+[13-Jun-2025 07:49:51 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:50:00 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:50:00 Europe/Madrid] CineFan [INFO]: Listando películas - Usuario: 5, Página: 1
+[13-Jun-2025 07:50:00 Europe/Madrid] CineFan [INFO]: Películas listadas exitosamente - Usuario: 5, Total: 13
+[13-Jun-2025 07:50:01 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:50:19 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:50:19 Europe/Madrid] CineFan [INFO]: Usuario 5 creó película: probaa (ID: 14)
+[13-Jun-2025 07:50:19 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:50:19 Europe/Madrid] CineFan [INFO]: Listando películas - Usuario: 5, Página: 1
+[13-Jun-2025 07:50:19 Europe/Madrid] CineFan [INFO]: Películas listadas exitosamente - Usuario: 5, Total: 14
+[13-Jun-2025 07:50:25 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:50:29 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:50:29 Europe/Madrid] CineFan [ERROR]: API Error [400]: ID de reseña requerido
+[13-Jun-2025 07:50:52 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:50:52 Europe/Madrid] CineFan [ERROR]: API Error [400]: ID de reseña requerido
+[13-Jun-2025 07:51:27 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:51:27 Europe/Madrid] CineFan [INFO]: Listando películas - Usuario: 5, Página: 1
+[13-Jun-2025 07:51:27 Europe/Madrid] CineFan [INFO]: Películas listadas exitosamente - Usuario: 5, Total: 14
+[13-Jun-2025 07:51:32 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:51:32 Europe/Madrid] CineFan [INFO]: Usuario 5 actualizó reseña 14 de película: Joseo
+[13-Jun-2025 07:51:32 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:51:36 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:51:36 Europe/Madrid] CineFan [INFO]: Listando películas - Usuario: 5, Página: 1
+[13-Jun-2025 07:51:36 Europe/Madrid] CineFan [INFO]: Películas listadas exitosamente - Usuario: 5, Total: 14
+[13-Jun-2025 07:51:39 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:51:39 Europe/Madrid] CineFan [INFO]: Usuario 5 actualizó reseña 14 de película: Joseo
+[13-Jun-2025 07:51:39 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:51:41 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:51:41 Europe/Madrid] CineFan [INFO]: Listando películas - Usuario: 5, Página: 1
+[13-Jun-2025 07:51:41 Europe/Madrid] CineFan [INFO]: Películas listadas exitosamente - Usuario: 5, Total: 14
+[13-Jun-2025 07:51:43 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:51:43 Europe/Madrid] CineFan [INFO]: Usuario 5 actualizó reseña 14 de película: Joseo
+[13-Jun-2025 07:51:43 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:52:06 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:52:06 Europe/Madrid] CineFan [INFO]: Iniciando carga de feed - Usuario: 5, Página: 1
+[13-Jun-2025 07:52:06 Europe/Madrid] CineFan [INFO]: Feed cargado exitosamente - Usuario: 5, Reseñas: 10
+[13-Jun-2025 07:52:11 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:52:11 Europe/Madrid] CineFan [INFO]: Listando películas - Usuario: 5, Página: 1
+[13-Jun-2025 07:52:11 Europe/Madrid] CineFan [INFO]: Películas listadas exitosamente - Usuario: 5, Total: 14
+[13-Jun-2025 07:52:29 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:52:29 Europe/Madrid] CineFan [INFO]: Usuario 5 creó reseña para película 4 (ID: 16)
+[13-Jun-2025 07:52:29 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:52:29 Europe/Madrid] CineFan [INFO]: Iniciando carga de feed - Usuario: 5, Página: 1
+[13-Jun-2025 07:52:29 Europe/Madrid] CineFan [INFO]: Feed cargado exitosamente - Usuario: 5, Reseñas: 10
+[13-Jun-2025 07:52:36 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:52:36 Europe/Madrid] CineFan [INFO]: Iniciando carga de feed - Usuario: 5, Página: 1
+[13-Jun-2025 07:52:36 Europe/Madrid] CineFan [INFO]: Feed cargado exitosamente - Usuario: 5, Reseñas: 10
+[13-Jun-2025 07:53:57 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:53:57 Europe/Madrid] CineFan [INFO]: Listando películas - Usuario: 5, Página: 1
+[13-Jun-2025 07:53:57 Europe/Madrid] CineFan [INFO]: Películas listadas exitosamente - Usuario: 5, Total: 14
+[13-Jun-2025 07:54:00 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:57:16 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:57:16 Europe/Madrid] CineFan [INFO]: Listando películas - Usuario: 5, Página: 1
+[13-Jun-2025 07:57:16 Europe/Madrid] CineFan [INFO]: Películas listadas exitosamente - Usuario: 5, Total: 14
+[13-Jun-2025 07:57:21 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:57:26 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:57:26 Europe/Madrid] CineFan [ERROR]: Error en editar película: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'fecha_modificacion' in 'field list'
+[13-Jun-2025 07:57:26 Europe/Madrid] CineFan [ERROR]: API Error [500]: Error interno del servidor
+[13-Jun-2025 07:57:34 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:57:34 Europe/Madrid] CineFan [ERROR]: Error en editar película: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'fecha_modificacion' in 'field list'
+[13-Jun-2025 07:57:34 Europe/Madrid] CineFan [ERROR]: API Error [500]: Error interno del servidor
+[13-Jun-2025 07:57:48 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:57:48 Europe/Madrid] CineFan [ERROR]: Error en editar película: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'fecha_modificacion' in 'field list'
+[13-Jun-2025 07:57:48 Europe/Madrid] CineFan [ERROR]: API Error [500]: Error interno del servidor
+[13-Jun-2025 07:58:20 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:58:20 Europe/Madrid] CineFan [INFO]: Iniciando carga de feed - Usuario: 5, Página: 1
+[13-Jun-2025 07:58:20 Europe/Madrid] CineFan [INFO]: Feed cargado exitosamente - Usuario: 5, Reseñas: 10
+[13-Jun-2025 07:58:24 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:58:24 Europe/Madrid] CineFan [INFO]: Listando películas - Usuario: 5, Página: 1
+[13-Jun-2025 07:58:24 Europe/Madrid] CineFan [INFO]: Películas listadas exitosamente - Usuario: 5, Total: 14
+[13-Jun-2025 07:58:25 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:58:29 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:58:29 Europe/Madrid] CineFan [ERROR]: Error: ID de reseña no válido. GET: [], POST: 
+[13-Jun-2025 07:58:29 Europe/Madrid] CineFan [ERROR]: API Error [400]: ID de reseña requerido y debe ser un número válido
+[13-Jun-2025 07:58:44 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 07:58:44 Europe/Madrid] CineFan [ERROR]: Error: ID de reseña no válido. GET: [], POST: 
+[13-Jun-2025 07:58:44 Europe/Madrid] CineFan [ERROR]: API Error [400]: ID de reseña requerido y debe ser un número válido

@@ -32,6 +32,45 @@ class Utils {
     }
     
     /**
+     * Calcula el tiempo transcurrido desde una fecha
+     * @param string $fechaCreacion Fecha en formato Y-m-d H:i:s
+     * @return string Tiempo transcurrido formateado
+     */
+    public static function timeAgo($fechaCreacion) {
+        if (empty($fechaCreacion)) {
+            return 'Fecha desconocida';
+        }
+        
+        try {
+            $fecha = new DateTime($fechaCreacion);
+            $ahora = new DateTime();
+            $diferencia = $ahora->diff($fecha);
+            
+            // Calcular tiempo transcurrido
+            if ($diferencia->y > 0) {
+                return $diferencia->y == 1 ? 'Hace 1 año' : 'Hace ' . $diferencia->y . ' años';
+            } elseif ($diferencia->m > 0) {
+                return $diferencia->m == 1 ? 'Hace 1 mes' : 'Hace ' . $diferencia->m . ' meses';
+            } elseif ($diferencia->d > 0) {
+                if ($diferencia->d >= 7) {
+                    $semanas = floor($diferencia->d / 7);
+                    return $semanas == 1 ? 'Hace 1 semana' : 'Hace ' . $semanas . ' semanas';
+                }
+                return $diferencia->d == 1 ? 'Hace 1 día' : 'Hace ' . $diferencia->d . ' días';
+            } elseif ($diferencia->h > 0) {
+                return $diferencia->h == 1 ? 'Hace 1 hora' : 'Hace ' . $diferencia->h . ' horas';
+            } elseif ($diferencia->i > 0) {
+                return $diferencia->i == 1 ? 'Hace 1 minuto' : 'Hace ' . $diferencia->i . ' minutos';
+            } else {
+                return 'Hace un momento';
+            }
+        } catch (Exception $e) {
+            // Si hay error, devolver fecha formateada
+            return date('d/m/Y H:i', strtotime($fechaCreacion));
+        }
+    }
+    
+    /**
      * Validar puntuación (1-5)
      */
     public static function validateRating($puntuacion) {
@@ -190,6 +229,124 @@ class Utils {
             }
         }
     }
+    
+    /**
+     * Validar longitud de cadena
+     */
+    public static function validateStringLength($texto, $minLength = 1, $maxLength = 255) {
+        $length = strlen(trim($texto));
+        return $length >= $minLength && $length <= $maxLength;
+    }
+    
+    /**
+     * Formatear número con separadores de miles
+     */
+    public static function formatNumber($numero, $decimales = 0) {
+        return number_format($numero, $decimales, ',', '.');
+    }
+    
+    /**
+     * Convertir bytes a formato legible
+     */
+    public static function formatBytes($bytes, $precision = 2) {
+        $units = array('B', 'KB', 'MB', 'GB', 'TB');
+        
+        for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
+            $bytes /= 1024;
+        }
+        
+        return round($bytes, $precision) . ' ' . $units[$i];
+    }
+    
+    /**
+     * Validar que un valor esté en un array de opciones válidas
+     */
+    public static function validateInArray($valor, $opciones) {
+        return in_array($valor, $opciones, true);
+    }
+    
+    /**
+     * Generar hash MD5 de un archivo
+     */
+    public static function getFileHash($filePath) {
+        if (file_exists($filePath)) {
+            return md5_file($filePath);
+        }
+        return false;
+    }
+    
+    /**
+     * Limpiar y validar número entero
+     */
+    public static function cleanInt($valor, $default = 0) {
+        $cleaned = filter_var($valor, FILTER_VALIDATE_INT);
+        return $cleaned !== false ? $cleaned : $default;
+    }
+    
+    /**
+     * Limpiar y validar número flotante
+     */
+    public static function cleanFloat($valor, $default = 0.0) {
+        $cleaned = filter_var($valor, FILTER_VALIDATE_FLOAT);
+        return $cleaned !== false ? $cleaned : $default;
+    }
+    
+    /**
+     * Verificar si una fecha es válida
+     */
+    public static function isValidDate($fecha, $formato = 'Y-m-d') {
+        $dateTime = DateTime::createFromFormat($formato, $fecha);
+        return $dateTime && $dateTime->format($formato) === $fecha;
+    }
+    
+    /**
+     * Generar código QR simple (requiere librería externa)
+     */
+    public static function generateQRCode($texto, $size = 150) {
+        // Implementación básica usando API externa
+        $url = "https://api.qrserver.com/v1/create-qr-code/";
+        $params = http_build_query([
+            'size' => $size . 'x' . $size,
+            'data' => $texto
+        ]);
+        
+        return $url . '?' . $params;
+    }
+    
+    /**
+     * Calcular edad a partir de fecha de nacimiento
+     */
+    public static function calculateAge($fechaNacimiento) {
+        try {
+            $nacimiento = new DateTime($fechaNacimiento);
+            $hoy = new DateTime();
+            $edad = $hoy->diff($nacimiento);
+            return $edad->y;
+        } catch (Exception $e) {
+            return 0;
+        }
+    }
+    
+    /**
+     * Validar código postal español
+     */
+    public static function validateSpanishPostalCode($codigoPostal) {
+        return preg_match('/^[0-5][0-9]{4}$/', $codigoPostal);
+    }
+    
+    /**
+     * Generar contraseña aleatoria
+     */
+    public static function generateRandomPassword($length = 12) {
+        $caracteres = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*';
+        $password = '';
+        
+        for ($i = 0; $i < $length; $i++) {
+            $password .= $caracteres[rand(0, strlen($caracteres) - 1)];
+        }
+        
+        return $password;
+    }
 }
 
 // Funciones helper globales
@@ -207,6 +364,10 @@ function logError($mensaje) {
 
 function logWarning($mensaje) {
     Utils::log($mensaje, 'WARNING');
+}
+
+function logDebug($mensaje) {
+    Utils::log($mensaje, 'DEBUG');
 }
 
 /**
@@ -230,4 +391,33 @@ function jsonError($message, $code = 400) {
     http_response_code($code);
     jsonResponse(null, false, $message);
 }
+
+/**
+ * Función helper para sanitizar entrada
+ */
+function sanitizeInput($input) {
+    return Utils::sanitizeHtml(trim($input));
+}
+
+/**
+ * Función helper para validar email
+ */
+function isValidEmail($email) {
+    return Utils::validateEmail($email);
+}
+
+/**
+ * Función helper para formatear tiempo transcurrido
+ */
+function timeAgo($fecha) {
+    return Utils::timeAgo($fecha);
+}
+
+/**
+ * Función helper para validar puntuación
+ */
+function isValidRating($puntuacion) {
+    return Utils::validateRating($puntuacion);
+}
+
 ?>

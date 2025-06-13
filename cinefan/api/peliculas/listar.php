@@ -4,8 +4,9 @@ require_once '../config/database.php';
 require_once '../includes/response.php';
 require_once '../includes/auth.php';
 require_once '../includes/functions.php';
+require_once '../config/config.php';
 
-// Validar método HTTP
+// Validar método
 Response::validateMethod(['GET']);
 
 try {
@@ -13,7 +14,7 @@ try {
     $authData = Auth::requireAuth();
     $userIdLogueado = $authData['user_id'];
     
-    // Obtener parámetros
+    // Parámetros de consulta
     $usuario = isset($_GET['usuario']) ? (int)$_GET['usuario'] : $userIdLogueado;
     $pagina = isset($_GET['pagina']) ? max(1, (int)$_GET['pagina']) : 1;
     $limite = isset($_GET['limite']) ? min(50, max(1, (int)$_GET['limite'])) : 20;
@@ -22,33 +23,14 @@ try {
     // Filtros opcionales
     $genero = isset($_GET['genero']) ? (int)$_GET['genero'] : null;
     $busqueda = isset($_GET['busqueda']) ? trim($_GET['busqueda']) : null;
+    $ordenar = isset($_GET['ordenar']) ? $_GET['ordenar'] : 'fecha_desc';
     
     Utils::log("Listando películas - Usuario: {$usuario}, Página: {$pagina}", 'INFO');
     
     $db = getDatabase();
     $conn = $db->getConnection();
     
-    // Construir consulta base (CORREGIDA)
-    $sqlBase = "FROM peliculas p
-                INNER JOIN usuarios u ON p.id_usuario_creador = u.id
-                LEFT JOIN generos g ON p.genero_id = g.id
-                WHERE p.activo = 1 AND u.activo = 1
-                AND p.id_usuario_creador = :usuario";
-    
-    $parametros = [':usuario' => $usuario];
-    
-    // Agregar filtros si existen
-    if ($genero) {
-        $sqlBase .= " AND p.genero_id = :genero";
-        $parametros[':genero'] = $genero;
-    }
-    
-    if ($busqueda) {
-        $sqlBase .= " AND (p.titulo LIKE :busqueda OR p.director LIKE :busqueda)";
-        $parametros[':busqueda'] = "%{$busqueda}%";
-    }
-    
-    // CONSULTA PRINCIPAL CORREGIDA
+    // Consulta principal
     $sql = "SELECT 
                 p.id,
                 p.titulo,
@@ -62,58 +44,159 @@ try {
                 
                 -- Datos del género
                 g.id as genero_id,
-                g.nombre as genero,
-                g.color_hex as color_genero,
+                g.nombre as genero_nombre,
+                g.color_hex as genero_color,
                 
                 -- Datos del usuario creador
                 u.nombre_usuario as usuario_creador,
                 u.nombre_completo as nombre_creador,
                 
-                -- Estadísticas de la película (subconsultas optimizadas)
-                (SELECT COUNT(*) FROM resenas r WHERE r.id_pelicula = p.id AND r.activo = 1) as total_resenas,
-                (SELECT AVG(r.puntuacion) FROM resenas r WHERE r.id_pelicula = p.id AND r.activo = 1) as puntuacion_promedio,
-                (SELECT COUNT(*) FROM favoritos f WHERE f.id_pelicula = p.id) as total_favoritos,
+                -- Estadísticas básicas
+                COALESCE(stats.total_resenas, 0) as total_resenas,
+                COALESCE(stats.puntuacion_promedio, 0) as puntuacion_promedio,
+                COALESCE(stats.total_favoritos, 0) as total_favoritos,
                 
-                -- Verificar si el usuario logueado tiene reseña
-                (SELECT r.id FROM resenas r WHERE r.id_pelicula = p.id AND r.id_usuario = :user_logueado AND r.activo = 1 LIMIT 1) as resena_usuario_id,
-                (SELECT r.puntuacion FROM resenas r WHERE r.id_pelicula = p.id AND r.id_usuario = :user_logueado AND r.activo = 1 LIMIT 1) as puntuacion_usuario,
+                -- Datos específicos del usuario logueado
+                user_data.resena_id as resena_usuario_id,
+                user_data.puntuacion_usuario,
+                user_data.es_favorito
                 
-                -- Verificar si está en favoritos del usuario logueado
-                (SELECT f.id FROM favoritos f WHERE f.id_pelicula = p.id AND f.id_usuario = :user_logueado LIMIT 1) as es_favorito
-                
-            " . $sqlBase . "
-            ORDER BY p.fecha_creacion DESC
-            LIMIT :limite OFFSET :offset";
+            FROM peliculas p
+            INNER JOIN usuarios u ON p.id_usuario_creador = u.id
+            LEFT JOIN generos g ON p.genero_id = g.id
+            
+            -- Subconsulta optimizada para estadísticas
+            LEFT JOIN (
+                SELECT 
+                    r.id_pelicula,
+                    COUNT(DISTINCT r.id) as total_resenas,
+                    AVG(r.puntuacion) as puntuacion_promedio,
+                    COUNT(DISTINCT f.id) as total_favoritos
+                FROM resenas r
+                LEFT JOIN favoritos f ON r.id_pelicula = f.id_pelicula
+                WHERE r.activo = 1
+                GROUP BY r.id_pelicula
+            ) stats ON p.id = stats.id_pelicula
+            
+            -- Subconsulta para datos específicos del usuario logueado
+            LEFT JOIN (
+                SELECT 
+                    p2.id as pelicula_id,
+                    r2.id as resena_id,
+                    r2.puntuacion as puntuacion_usuario,
+                    CASE WHEN f2.id IS NOT NULL THEN 1 ELSE 0 END as es_favorito
+                FROM peliculas p2
+                LEFT JOIN resenas r2 ON p2.id = r2.id_pelicula AND r2.id_usuario = ? AND r2.activo = 1
+                LEFT JOIN favoritos f2 ON p2.id = f2.id_pelicula AND f2.id_usuario = ?
+            ) user_data ON p.id = user_data.pelicula_id
+            
+            WHERE p.activo = 1 AND u.activo = 1";
     
-    // Preparar y ejecutar consulta principal
-    $stmt = $conn->prepare($sql);
-    foreach ($parametros as $key => $value) {
-        $stmt->bindParam($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+    // Inicializar parámetros
+    $parametros = [$userIdLogueado, $userIdLogueado];
+    
+    // Aplicar filtros
+    if ($usuario && $usuario != $userIdLogueado) {
+        $sql .= " AND p.id_usuario_creador = ?";
+        $parametros[] = $usuario;
     }
-    $stmt->bindParam(':user_logueado', $userIdLogueado, PDO::PARAM_INT);
-    $stmt->bindParam(':limite', $limite, PDO::PARAM_INT);
-    $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-    $stmt->execute();
     
+    if ($genero) {
+        $sql .= " AND p.genero_id = ?";
+        $parametros[] = $genero;
+    }
+    
+    if ($busqueda) {
+        $sql .= " AND (p.titulo LIKE ? OR p.director LIKE ? OR p.sinopsis LIKE ?)";
+        $searchTerm = "%{$busqueda}%";
+        $parametros[] = $searchTerm;
+        $parametros[] = $searchTerm;
+        $parametros[] = $searchTerm;
+    }
+    
+    // Aplicar ordenamiento
+    switch ($ordenar) {
+        case 'titulo_asc':
+            $sql .= " ORDER BY p.titulo ASC";
+            break;
+        case 'titulo_desc':
+            $sql .= " ORDER BY p.titulo DESC";
+            break;
+        case 'director_asc':
+            $sql .= " ORDER BY p.director ASC";
+            break;
+        case 'director_desc':
+            $sql .= " ORDER BY p.director DESC";
+            break;
+        case 'ano_asc':
+            $sql .= " ORDER BY p.ano_lanzamiento ASC";
+            break;
+        case 'ano_desc':
+            $sql .= " ORDER BY p.ano_lanzamiento DESC";
+            break;
+        case 'puntuacion_desc':
+            $sql .= " ORDER BY puntuacion_promedio DESC, p.fecha_creacion DESC";
+            break;
+        case 'puntuacion_asc':
+            $sql .= " ORDER BY puntuacion_promedio ASC, p.fecha_creacion DESC";
+            break;
+        case 'resenas_desc':
+            $sql .= " ORDER BY total_resenas DESC, p.fecha_creacion DESC";
+            break;
+        case 'fecha_asc':
+            $sql .= " ORDER BY p.fecha_creacion ASC";
+            break;
+        default: // fecha_desc
+            $sql .= " ORDER BY p.fecha_creacion DESC";
+            break;
+    }
+    
+    // Agregar paginación
+    $sql .= " LIMIT ? OFFSET ?";
+    $parametros[] = $limite;
+    $parametros[] = $offset;
+    
+    // Ejecutar consulta principal
+    $stmt = $conn->prepare($sql);
+    $stmt->execute($parametros);
     $peliculas = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-    // Consulta para contar total (optimizada)
-    $countSql = "SELECT COUNT(*) as total " . $sqlBase;
-    $countStmt = $conn->prepare($countSql);
-    foreach ($parametros as $key => $value) {
-        $countStmt->bindParam($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+    // consulta conteo
+    $countSql = "SELECT COUNT(DISTINCT p.id) as total 
+                 FROM peliculas p
+                 INNER JOIN usuarios u ON p.id_usuario_creador = u.id
+                 WHERE p.activo = 1 AND u.activo = 1";
+    
+    $countParametros = [];
+    
+    // Aplicar mismo filtro de usuario
+    if ($usuario && $usuario != $userIdLogueado) {
+        $countSql .= " AND p.id_usuario_creador = ?";
+        $countParametros[] = $usuario;
     }
-    $countStmt->execute();
+    
+    // Aplicar mismo filtro de género
+    if ($genero) {
+        $countSql .= " AND p.genero_id = ?";
+        $countParametros[] = $genero;
+    }
+    
+    // Aplicar mismo filtro de búsqueda
+    if ($busqueda) {
+        $countSql .= " AND (p.titulo LIKE ? OR p.director LIKE ? OR p.sinopsis LIKE ?)";
+        $countParametros[] = $searchTerm;
+        $countParametros[] = $searchTerm;
+        $countParametros[] = $searchTerm;
+    }
+    
+    // Ejecutar consulta de conteo
+    $countStmt = $conn->prepare($countSql);
+    $countStmt->execute($countParametros);
     $totalPeliculas = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
     
-    // Formatear datos para respuesta
+    // 🔥 FORMATEAR RESULTADOS CON TIMEAGO()
     $peliculasFormateadas = [];
     foreach ($peliculas as $pelicula) {
-        // Calcular puntuación promedio formateada
-        $puntuacionPromedio = $pelicula['puntuacion_promedio'] 
-            ? round((float)$pelicula['puntuacion_promedio'], 1) 
-            : 0;
-        
         $peliculasFormateadas[] = [
             'id' => (int)$pelicula['id'],
             'titulo' => $pelicula['titulo'],
@@ -124,12 +207,13 @@ try {
             'imagen_url' => $pelicula['imagen_url'],
             'fecha_creacion' => $pelicula['fecha_creacion'],
             'fecha_actualizacion' => $pelicula['fecha_actualizacion'],
+            'tiempo_transcurrido' => Utils::timeAgo($pelicula['fecha_creacion']),
             
             // Información del género
             'genero' => [
                 'id' => (int)$pelicula['genero_id'],
-                'nombre' => $pelicula['genero'] ?? 'Sin género',
-                'color' => $pelicula['color_genero'] ?? '#6c757d'
+                'nombre' => $pelicula['genero_nombre'] ?? 'Sin género',
+                'color' => $pelicula['genero_color'] ?? '#6c757d'
             ],
             
             // Información del creador
@@ -141,16 +225,17 @@ try {
             // Estadísticas
             'estadisticas' => [
                 'total_resenas' => (int)$pelicula['total_resenas'],
-                'puntuacion_promedio' => $puntuacionPromedio,
+                'puntuacion_promedio' => round((float)$pelicula['puntuacion_promedio'], 1),
                 'total_favoritos' => (int)$pelicula['total_favoritos']
             ],
             
             // Estado para usuario logueado
             'estado_usuario' => [
                 'tiene_resena' => !is_null($pelicula['resena_usuario_id']),
-                'puntuacion_usuario' => $pelicula['puntuacion_usuario'] ? (int)$pelicula['puntuacion_usuario'] : null,
-                'es_favorito' => !is_null($pelicula['es_favorito']),
-                'es_propietario' => ($usuario == $userIdLogueado)
+                'puntuacion_usuario' => $pelicula['puntuacion_usuario'] ? 
+                    (int)$pelicula['puntuacion_usuario'] : null,
+                'es_favorito' => (bool)$pelicula['es_favorito'],
+                'es_propietario' => ($pelicula['usuario_creador'] == $userIdLogueado)
             ]
         ];
     }
@@ -174,7 +259,8 @@ try {
         'filtros_aplicados' => [
             'usuario' => $usuario,
             'genero' => $genero,
-            'busqueda' => $busqueda
+            'busqueda' => $busqueda,
+            'ordenar' => $ordenar
         ],
         'timestamp' => date('Y-m-d H:i:s')
     ];

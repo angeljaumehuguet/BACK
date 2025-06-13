@@ -6,22 +6,22 @@ require_once '../includes/auth.php';
 require_once '../includes/functions.php';
 require_once '../config/config.php';
 
-// validar método
+// Validar método
 Response::validateMethod(['PUT', 'PATCH']);
 
 try {
-    // autenticación requerida
+    // Autenticación requerida
     $authData = Auth::requireAuth();
     $userId = $authData['user_id'];
     
-    // obtener datos de entrada
+    // Obtener datos de entrada
     $input = Response::getJsonInput();
     
     if (empty($input)) {
         Response::error('Datos requeridos para actualizar', 400);
     }
     
-    // Obtener ID desde URL o desde JSON body
+    // OBTENER ID DE PELÍCULA CORRECTAMENTE
     $peliculaId = null;
     
     // Primero intentar desde URL (?id=X)
@@ -40,39 +40,37 @@ try {
     $db = getDatabase();
     $conn = $db->getConnection();
     
-    // verificar que la película existe y pertenece al usuario
+    // VERIFICAR QUE LA PELÍCULA EXISTE Y PERTENECE AL USUARIO
     $checkSql = "SELECT id, titulo, id_usuario_creador 
                  FROM peliculas 
-                 WHERE id = :id AND activo = true";
+                 WHERE id = ? AND activo = 1";
     
     $checkStmt = $conn->prepare($checkSql);
-    $checkStmt->bindParam(':id', $peliculaId);
-    $checkStmt->execute();
-    
+    $checkStmt->execute([$peliculaId]);
     $pelicula = $checkStmt->fetch(PDO::FETCH_ASSOC);
     
     if (!$pelicula) {
         Response::error('Película no encontrada', 404);
     }
     
-    // verificar propiedad
+    // Verificar propiedad
     if ($pelicula['id_usuario_creador'] != $userId) {
         Response::error('No tienes permisos para editar esta película', 403);
     }
     
-    // campos permitidos para actualizar
+    // CAMPOS PERMITIDOS PARA ACTUALIZAR
     $camposPermitidos = [
         'titulo', 'director', 'ano_lanzamiento', 'genero_id', 
         'duracion_minutos', 'sinopsis', 'imagen_url'
     ];
     
     $datosActualizar = [];
-    $parametros = [':id' => $peliculaId];
+    $parametros = [];
     
     foreach ($camposPermitidos as $campo) {
         if (isset($input[$campo])) {
-            $datosActualizar[] = "$campo = :$campo";
-            $parametros[":$campo"] = Response::sanitizeInput($input[$campo]);
+            $datosActualizar[] = "$campo = ?";
+            $parametros[] = Response::sanitizeInput($input[$campo]);
         }
     }
     
@@ -80,7 +78,7 @@ try {
         Response::error('No hay datos válidos para actualizar', 400);
     }
     
-    // validaciones específicas
+    // VALIDACIONES ESPECÍFICAS
     if (isset($input['ano_lanzamiento'])) {
         $ano = (int)$input['ano_lanzamiento'];
         if ($ano < 1890 || $ano > date('Y') + 5) {
@@ -97,57 +95,56 @@ try {
     
     if (isset($input['genero_id'])) {
         $generoId = (int)$input['genero_id'];
-        $generoCheckSql = "SELECT id FROM generos WHERE id = :genero_id";
+        $generoCheckSql = "SELECT id FROM generos WHERE id = ?";
         $generoStmt = $conn->prepare($generoCheckSql);
-        $generoStmt->bindParam(':genero_id', $generoId);
-        $generoStmt->execute();
+        $generoStmt->execute([$generoId]);
         
         if (!$generoStmt->fetch()) {
             Response::error('Género no válido', 400);
         }
     }
     
-    // Agregar fecha de modificación
+    // Agregar fecha de modificación y ID para WHERE
     $datosActualizar[] = "fecha_modificacion = NOW()";
+    $parametros[] = $peliculaId;
     
-    // construir y ejecutar consulta de actualización
+    // CONSTRUIR Y EJECUTAR CONSULTA DE ACTUALIZACIÓN
     $updateSql = "UPDATE peliculas 
                   SET " . implode(', ', $datosActualizar) . "
-                  WHERE id = :id";
+                  WHERE id = ?";
     
     $updateStmt = $conn->prepare($updateSql);
     
-    foreach ($parametros as $param => $value) {
-        $updateStmt->bindValue($param, $value);
-    }
-    
-    if ($updateStmt->execute()) {
-        // obtener datos actualizados
-        $selectSql = "SELECT p.*, g.nombre as genero_nombre 
+    if ($updateStmt->execute($parametros)) {
+        // OBTENER DATOS ACTUALIZADOS CON TIMEAGO
+        $selectSql = "SELECT p.*, g.nombre as genero_nombre, g.color_hex as genero_color
                       FROM peliculas p
                       LEFT JOIN generos g ON p.genero_id = g.id
-                      WHERE p.id = :id";
+                      WHERE p.id = ?";
         
         $selectStmt = $conn->prepare($selectSql);
-        $selectStmt->bindParam(':id', $peliculaId);
-        $selectStmt->execute();
-        
+        $selectStmt->execute([$peliculaId]);
         $peliculaActualizada = $selectStmt->fetch(PDO::FETCH_ASSOC);
         
         Utils::log("Usuario {$userId} actualizó película: {$peliculaActualizada['titulo']} (ID: {$peliculaId})", 'INFO');
         
-        // Formatear respuesta
+        // FORMATEAR RESPUESTA CON DATOS COMPLETOS
         $response = [
             'id' => (int)$peliculaActualizada['id'],
             'titulo' => $peliculaActualizada['titulo'],
             'director' => $peliculaActualizada['director'],
             'ano_lanzamiento' => (int)$peliculaActualizada['ano_lanzamiento'],
             'duracion_minutos' => (int)$peliculaActualizada['duracion_minutos'],
-            'genero' => $peliculaActualizada['genero_nombre'] ?? 'Sin género',
             'sinopsis' => $peliculaActualizada['sinopsis'],
             'imagen_url' => $peliculaActualizada['imagen_url'],
             'fecha_creacion' => $peliculaActualizada['fecha_creacion'],
-            'fecha_modificacion' => $peliculaActualizada['fecha_modificacion']
+            'fecha_modificacion' => $peliculaActualizada['fecha_modificacion'],
+            'tiempo_transcurrido' => Utils::timeAgo($peliculaActualizada['fecha_creacion']),
+            'genero' => [
+                'id' => (int)$peliculaActualizada['genero_id'],
+                'nombre' => $peliculaActualizada['genero_nombre'] ?? 'Sin género',
+                'color' => $peliculaActualizada['genero_color'] ?? '#6c757d'
+            ]
         ];
         
         Response::success($response, 'Película actualizada exitosamente');
