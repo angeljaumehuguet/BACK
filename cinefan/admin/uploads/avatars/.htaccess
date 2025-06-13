@@ -1,0 +1,5 @@
+Options -Indexes
+Deny from all
+<Files ~ "\.(jpg|jpeg|png|gif|pdf)$">
+Allow from all
+</Files>

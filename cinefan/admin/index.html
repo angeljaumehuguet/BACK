@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineFan Admin Panel</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #764ba2;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #764ba2;
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .tab-button {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 15px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-button:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-2px);
+        }
+
+        .tab-button.active {
+            background: #764ba2;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #764ba2;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+
+        .filter-select {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #764ba2;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a3780;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4f63d2;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-table th {
+            background: #764ba2;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .action-icon {
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .action-icon.edit {
+            background: #ffc107;
+            color: white;
+        }
+
+        .action-icon.delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .action-icon.view {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .action-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #764ba2;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .success-message {
+            color: #28a745;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            background: white;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .pagination button:hover {
+            background: #f8f9fa;
+        }
+
+        .pagination button.active {
+            background: #764ba2;
+            color: white;
+            border-color: #764ba2;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .loading i {
+            font-size: 2rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .rating-stars {
+            color: #ffc107;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                min-width: auto;
+            }
+
+            .action-buttons {
+                justify-content: stretch;
+            }
+
+            .data-table {
+                font-size: 0.9rem;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 10px 8px;
+            }
+
+            .modal-content {
+                margin: 10% auto;
+                width: 95%;
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .stat-card {
+                padding: 20px;
+            }
+
+            .stat-card i {
+                font-size: 2rem;
+            }
+
+            .stat-card h3 {
+                font-size: 1.5rem;
+            }
+
+            .data-table {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-film"></i> CineFan Admin Panel</h1>
+            <p>Panel de administración para la gestión de la red social de cine</p>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-users"></i>
+                <h3 id="totalUsuarios">0</h3>
+                <p>Usuarios Registrados</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-film"></i>
+                <h3 id="totalPeliculas">0</h3>
+                <p>Películas</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-star"></i>
+                <h3 id="totalResenas">0</h3>
+                <p>Reseñas</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-tags"></i>
+                <h3 id="totalGeneros">0</h3>
+                <p>Géneros</p>
+            </div>
+        </div>
+
+        <!-- Navegación por pestañas -->
+        <div class="tabs">
+            <button class="tab-button active" onclick="showTab('usuarios')">
+                <i class="fas fa-users"></i> Usuarios
+            </button>
+            <button class="tab-button" onclick="showTab('peliculas')">
+                <i class="fas fa-film"></i> Películas
+            </button>
+            <button class="tab-button" onclick="showTab('resenas')">
+                <i class="fas fa-star"></i> Reseñas
+            </button>
+            <button class="tab-button" onclick="showTab('generos')">
+                <i class="fas fa-tags"></i> Géneros
+            </button>
+            <button class="tab-button" onclick="showTab('estadisticas')">
+                <i class="fas fa-chart-bar"></i> Estadísticas
+            </button>
+        </div>
+
+        <!-- Contenido de Usuarios -->
+        <div id="usuarios" class="tab-content active">
+            <div class="controls">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchUsuarios" placeholder="Buscar usuarios...">
+                </div>
+                <select id="filterUsuarios" class="filter-select">
+                    <option value="todos">Todos los usuarios</option>
+                    <option value="activos">Activos</option>
+                    <option value="inactivos">Inactivos</option>
+                </select>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="showModal('addUsuario')">
+                        <i class="fas fa-plus"></i> Agregar Usuario
+                    </button>
+                    <button class="btn btn-secondary" onclick="generatePDF('usuarios')">
+                        <i class="fas fa-file-pdf"></i> Generar PDF
+                    </button>
+                </div>
+            </div>
+
+            <div class="loading" id="loadingUsuarios">
+                <i class="fas fa-spinner"></i>
+                <p>Cargando usuarios...</p>
+            </div>
+
+            <table class="data-table" id="tablaUsuarios" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Usuario</th>
+                        <th>Email</th>
+                        <th>Nombre Completo</th>
+                        <th>Fecha Registro</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="usuariosTableBody">
+                </tbody>
+            </table>
+
+            <div class="pagination" id="paginationUsuarios"></div>
+        </div>
+
+        <!-- Contenido de Películas -->
+        <div id="peliculas" class="tab-content">
+            <div class="controls">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchPeliculas" placeholder="Buscar películas...">
+                </div>
+                <select id="filterPeliculas" class="filter-select">
+                    <option value="todos">Todos los géneros</option>
+                </select>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="showModal('addPelicula')">
+                        <i class="fas fa-plus"></i> Agregar Película
+                    </button>
+                    <button class="btn btn-secondary" onclick="generatePDF('peliculas')">
+                        <i class="fas fa-file-pdf"></i> Generar PDF
+                    </button>
+                </div>
+            </div>
+
+            <div class="loading" id="loadingPeliculas">
+                <i class="fas fa-spinner"></i>
+                <p>Cargando películas...</p>
+            </div>
+
+            <table class="data-table" id="tablaPeliculas" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Título</th>
+                        <th>Director</th>
+                        <th>Año</th>
+                        <th>Género</th>
+                        <th>Duración</th>
+                        <th>Puntuación</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="peliculasTableBody">
+                </tbody>
+            </table>
+
+            <div class="pagination" id="paginationPeliculas"></div>
+        </div>
+
+        <!-- Contenido de Reseñas -->
+        <div id="resenas" class="tab-content">
+            <div class="controls">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchResenas" placeholder="Buscar reseñas...">
+                </div>
+                <select id="filterResenas" class="filter-select">
+                    <option value="todos">Todas las puntuaciones</option>
+                    <option value="5">5 estrellas</option>
+                    <option value="4">4 estrellas</option>
+                    <option value="3">3 estrellas</option>
+                    <option value="2">2 estrellas</option>
+                    <option value="1">1 estrella</option>
+                </select>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="showModal('addResena')">
+                        <i class="fas fa-plus"></i> Agregar Reseña
+                    </button>
+                    <button class="btn btn-secondary" onclick="generatePDF('resenas')">
+                        <i class="fas fa-file-pdf"></i> Generar PDF
+                    </button>
+                </div>
+            </div>
+
+            <div class="loading" id="loadingResenas">
+                <i class="fas fa-spinner"></i>
+                <p>Cargando reseñas...</p>
+            </div>
+
+            <table class="data-table" id="tablaResenas" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Usuario</th>
+                        <th>Película</th>
+                        <th>Puntuación</th>
+                        <th>Título</th>
+                        <th>Likes</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="resenasTableBody">
+                </tbody>
+            </table>
+
+            <div class="pagination" id="paginationResenas"></div>
+        </div>
+
+        <!-- Contenido de Géneros -->
+        <div id="generos" class="tab-content">
+            <div class="controls">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchGeneros" placeholder="Buscar géneros...">
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="showModal('addGenero')">
+                        <i class="fas fa-plus"></i> Agregar Género
+                    </button>
+                    <button class="btn btn-secondary" onclick="generatePDF('generos')">
+                        <i class="fas fa-file-pdf"></i> Generar PDF
+                    </button>
+                </div>
+            </div>
+
+            <div class="loading" id="loadingGeneros">
+                <i class="fas fa-spinner"></i>
+                <p>Cargando géneros...</p>
+            </div>
+
+            <table class="data-table" id="tablaGeneros" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Color</th>
+                        <th>Películas</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="generosTableBody">
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Contenido de Estadísticas -->
+        <div id="estadisticas" class="tab-content">
+            <div class="controls">
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="generatePDF('estadisticas')">
+                        <i class="fas fa-file-pdf"></i> Generar Reporte PDF
+                    </button>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-user-plus"></i>
+                    <h3 id="usuariosNuevosMes">0</h3>
+                    <p>Usuarios Nuevos (Mes)</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-star-half-alt"></i>
+                    <h3 id="puntuacionPromedio">0.0</h3>
+                    <p>Puntuación Promedio</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-heart"></i>
+                    <h3 id="totalLikes">0</h3>
+                    <p>Total Likes</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-calendar-day"></i>
+                    <h3 id="actividadHoy">0</h3>
+                    <p>Actividad Hoy</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <h3>Top 5 Películas Mejor Puntuadas</h3>
+                <table class="data-table" id="topPeliculas">
+                    <thead>
+                        <tr>
+                            <th>Título</th>
+                            <th>Director</th>
+                            <th>Año</th>
+                            <th>Puntuación</th>
+                            <th>Reseñas</th>
+                        </tr>
+                    </thead>
+                    <tbody id="topPeliculasBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modales -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // URL base de nuestra API
+        const API_BASE_URL = 'http://192.168.0.36/cinefan/api/';
+        
+        // variables globales para controlar el estado
+        let currentTab = 'usuarios';
+        let currentPage = 1;
+        let itemsPerPage = 10;
+        let allData = {};
+        let isLoading = false;
+
+        // datos de ejemplo para probar sin BD
+        const sampleData = {
+            usuarios: [
+                {
+                    id: 1,
+                    nombre_usuario: 'angel_admin',
+                    email: 'angel@cinefan.com',
+                    nombre_completo: 'Ángel González',
+                    fecha_registro: '2024-01-15',
+                    activo: true
+                },
+                {
+                    id: 2,
+                    nombre_usuario: 'maria_cine',
+                    email: 'maria@email.com',
+                    nombre_completo: 'María López',
+                    fecha_registro: '2024-02-20',
+                    activo: true
+                },
+                {
+                    id: 3,
+                    nombre_usuario: 'carlos_film',
+                    email: 'carlos@email.com',
+                    nombre_completo: 'Carlos Martín',
+                    fecha_registro: '2024-03-10',
+                    activo: false
+                }
+            ],
+            peliculas: [
+                {
+                    id: 1,
+                    titulo: 'Oppenheimer',
+                    director: 'Christopher Nolan',
+                    ano_lanzamiento: 2023,
+                    genero: 'Drama',
+                    duracion_minutos: 180,
+                    puntuacion_promedio: 4.5,
+                    total_resenas: 25
+                },
+                {
+                    id: 2,
+                    titulo: 'Barbie',
+                    director: 'Greta Gerwig',
+                    ano_lanzamiento: 2023,
+                    genero: 'Comedia',
+                    duracion_minutos: 114,
+                    puntuacion_promedio: 4.2,
+                    total_resenas: 18
+                },
+                {
+                    id: 3,
+                    titulo: 'Spider-Man: Across the Spider-Verse',
+                    director: 'Joaquim Dos Santos',
+                    ano_lanzamiento: 2023,
+                    genero: 'Animación',
+                    duracion_minutos: 140,
+                    puntuacion_promedio: 4.8,
+                    total_resenas: 32
+                }
+            ],
+            resenas: [
+                {
+                    id: 1,
+                    usuario: 'angel_admin',
+                    pelicula: 'Oppenheimer',
+                    puntuacion: 5,
+                    titulo: 'Obra maestra cinematográfica',
+                    likes: 15,
+                    fecha_resena: '2024-01-20'
+                },
+                {
+                    id: 2,
+                    usuario: 'maria_cine',
+                    pelicula: 'Barbie',
+                    puntuacion: 4,
+                    titulo: 'Divertida y colorida',
+                    likes: 8,
+                    fecha_resena: '2024-02-15'
+                }
+            ],
+            generos: [
+                {
+                    id: 1,
+                    nombre: 'Acción',
+                    descripcion: 'Películas con secuencias de acción y aventura',
+                    color_hex: '#dc3545',
+                    total_peliculas: 12
+                },
+                {
+                    id: 2,
+                    nombre: 'Comedia',
+                    descripcion: 'Películas diseñadas para hacer reír',
+                    color_hex: '#ffc107',
+                    total_peliculas: 8
+                },
+                {
+                    id: 3,
+                    nombre: 'Drama',
+                    descripcion: 'Películas que exploran temas serios',
+                    color_hex: '#6f42c1',
+                    total_peliculas: 15
+                }
+            ]
+        };
+
+        // cuando la pagina carga ejecutamos esto
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStats();
+            loadGeneros();
+            loadData('usuarios');
+        });
+
+        // cambiar entre pestañas del panel
+        function showTab(tabName) {
+            // ocultar todas las pestañas
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // quitar activo de todos los botones
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // mostrar la pestaña seleccionada
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            currentTab = tabName;
+            currentPage = 1;
+            
+            if (tabName !== 'estadisticas') {
+                loadData(tabName);
+            } else {
+                loadEstadisticas();
+            }
+        }
+
+        // cargar estadisticas para el dashboard
+        function loadStats() {
+            // simulamos carga de datos
+            setTimeout(() => {
+                document.getElementById('totalUsuarios').textContent = '127';
+                document.getElementById('totalPeliculas').textContent = '45';
+                document.getElementById('totalResenas').textContent = '298';
+                document.getElementById('totalGeneros').textContent = '13';
+            }, 500);
+        }
+
+        // cargar generos para los filtros
+        function loadGeneros() {
+            const generosSelect = document.getElementById('filterPeliculas');
+            sampleData.generos.forEach(genero => {
+                const option = document.createElement('option');
+                option.value = genero.id;
+                option.textContent = genero.nombre;
+                generosSelect.appendChild(option);
+            });
+        }
+
+        // cargar datos de cualquier tipo (usuarios peliculas etc)
+        function loadData(type) {
+            if (isLoading) return;
+            
+            isLoading = true;
+            const loadingElement = document.getElementById(`loading${type.charAt(0).toUpperCase() + type.slice(1)}`);
+            const tableElement = document.getElementById(`tabla${type.charAt(0).toUpperCase() + type.slice(1)}`);
+            
+            loadingElement.style.display = 'block';
+            tableElement.style.display = 'none';
+            
+            // simulamos que tarda un poco en cargar
+            setTimeout(() => {
+                allData[type] = sampleData[type];
+                renderTable(type);
+                loadingElement.style.display = 'none';
+                tableElement.style.display = 'table';
+                isLoading = false;
+            }, 1000);
+        }
+
+        // crear las filas de la tabla con los datos
+        function renderTable(type) {
+            const tbody = document.getElementById(`${type}TableBody`);
+            tbody.innerHTML = '';
+            
+            const data = allData[type] || [];
+            
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                
+                // diferentes formatos segun el tipo de datos
+                switch(type) {
+                    case 'usuarios':
+                        row.innerHTML = `
+                            <td>${item.id}</td>
+                            <td>${item.nombre_usuario}</td>
+                            <td>${item.email}</td>
+                            <td>${item.nombre_completo}</td>
+                            <td>${formatDate(item.fecha_registro)}</td>
+                            <td><span class="status-badge ${item.activo ? 'status-active' : 'status-inactive'}">
+                                ${item.activo ? 'Activo' : 'Inactivo'}
+                            </span></td>
+                            <td class="table-actions">
+                                <button class="action-icon view" onclick="viewItem('usuarios', ${item.id})" title="Ver">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-icon edit" onclick="editItem('usuarios', ${item.id})" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-icon delete" onclick="deleteItem('usuarios', ${item.id})" title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        `;
+                        break;
+                        
+                    case 'peliculas':
+                        row.innerHTML = `
+                            <td>${item.id}</td>
+                            <td>${item.titulo}</td>
+                            <td>${item.director}</td>
+                            <td>${item.ano_lanzamiento}</td>
+                            <td>${item.genero}</td>
+                            <td>${item.duracion_minutos} min</td>
+                            <td>
+                                <span class="rating-stars">
+                                    ${generateStars(item.puntuacion_promedio)}
+                                </span>
+                                ${item.puntuacion_promedio}/5 (${item.total_resenas})
+                            </td>
+                            <td class="table-actions">
+                                <button class="action-icon view" onclick="viewItem('peliculas', ${item.id})" title="Ver">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-icon edit" onclick="editItem('peliculas', ${item.id})" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-icon delete" onclick="deleteItem('peliculas', ${item.id})" title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        `;
+                        break;
+                        
+                    case 'resenas':
+                        row.innerHTML = `
+                            <td>${item.id}</td>
+                            <td>${item.usuario}</td>
+                            <td>${item.pelicula}</td>
+                            <td>
+                                <span class="rating-stars">
+                                    ${generateStars(item.puntuacion)}
+                                </span>
+                            </td>
+                            <td>${item.titulo}</td>
+                            <td>${item.likes} <i class="fas fa-heart"></i></td>
+                            <td>${formatDate(item.fecha_resena)}</td>
+                            <td class="table-actions">
+                                <button class="action-icon view" onclick="viewItem('resenas', ${item.id})" title="Ver">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-icon edit" onclick="editItem('resenas', ${item.id})" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-icon delete" onclick="deleteItem('resenas', ${item.id})" title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        `;
+                        break;
+                        
+                    case 'generos':
+                        row.innerHTML = `
+                            <td>${item.id}</td>
+                            <td>${item.nombre}</td>
+                            <td>${item.descripcion}</td>
+                            <td>
+                                <span style="display: inline-block; width: 20px; height: 20px; background-color: ${item.color_hex}; border-radius: 50%; margin-right: 5px;"></span>
+                                ${item.color_hex}
+                            </td>
+                            <td>${item.total_peliculas}</td>
+                            <td class="table-actions">
+                                <button class="action-icon view" onclick="viewItem('generos', ${item.id})" title="Ver">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-icon edit" onclick="editItem('generos', ${item.id})" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-icon delete" onclick="deleteItem('generos', ${item.id})" title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        `;
+                        break;
+                }
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        // cargar estadisticas completas para la pestaña
+        function loadEstadisticas() {
+            setTimeout(() => {
+                document.getElementById('usuariosNuevosMes').textContent = '24';
+                document.getElementById('puntuacionPromedio').textContent = '4.3';
+                document.getElementById('totalLikes').textContent = '1,247';
+                document.getElementById('actividadHoy').textContent = '18';
+                
+                // rellenar tabla de top peliculas
+                const topPeliculasBody = document.getElementById('topPeliculasBody');
+                topPeliculasBody.innerHTML = '';
+                
+                const topPeliculas = [
+                    { titulo: 'Spider-Man: Across the Spider-Verse', director: 'Joaquim Dos Santos', ano: 2023, puntuacion: 4.8, resenas: 32 },
+                    { titulo: 'Oppenheimer', director: 'Christopher Nolan', ano: 2023, puntuacion: 4.5, resenas: 25 },
+                    { titulo: 'Barbie', director: 'Greta Gerwig', ano: 2023, puntuacion: 4.2, resenas: 18 }
+                ];
+                
+                topPeliculas.forEach(pelicula => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${pelicula.titulo}</td>
+                        <td>${pelicula.director}</td>
+                        <td>${pelicula.ano}</td>
+                        <td>
+                            <span class="rating-stars">
+                                ${generateStars(pelicula.puntuacion)}
+                            </span>
+                            ${pelicula.puntuacion}/5
+                        </td>
+                        <td>${pelicula.resenas}</td>
+                    `;
+                    topPeliculasBody.appendChild(row);
+                });
+            }, 500);
+        }
+
+        // funciones para formatear datos
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('es-ES');
+        }
+
+        // generar estrellas para mostrar puntuacion
+        function generateStars(rating) {
+            const fullStars = Math.floor(rating);
+            const halfStar = rating % 1 >= 0.5;
+            let stars = '';
+            
+            // estrellas completas
+            for (let i = 0; i < fullStars; i++) {
+                stars += '<i class="fas fa-star"></i>';
+            }
+            // media estrella si hace falta
+            if (halfStar) {
+                stars += '<i class="fas fa-star-half-alt"></i>';
+            }
+            // estrellas vacias
+            const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+            for (let i = 0; i < emptyStars; i++) {
+                stars += '<i class="far fa-star"></i>';
+            }
+            
+            return stars;
+        }
+
+        // funciones CRUD para gestionar elementos
+
+        // ver detalles de un elemento
+        function viewItem(type, id) {
+            const item = allData[type].find(item => item.id === id);
+            if (!item) return;
+            
+            let content = `<h2>Ver ${type.charAt(0).toUpperCase() + type.slice(1, -1)}</h2>`;
+            content += '<div class="form-group">';
+            
+            // mostrar todos los campos del elemento
+            Object.keys(item).forEach(key => {
+                if (key !== 'id') {
+                    content += `<label><strong>${key.replace('_', ' ').toUpperCase()}:</strong></label>`;
+                    content += `<p>${item[key]}</p>`;
+                }
+            });
+            
+            content += '</div>';
+            
+            document.getElementById('modalContent').innerHTML = content;
+            document.getElementById('modal').style.display = 'block';
+        }
+
+        // editar elemento existente
+        function editItem(type, id) {
+            const item = allData[type].find(item => item.id === id);
+            if (!item) return;
+            
+            let content = `<h2>Editar ${type.charAt(0).toUpperCase() + type.slice(1, -1)}</h2>`;
+            content += '<form id="editForm">';
+            
+            // crear campos de formulario para cada propiedad
+            Object.keys(item).forEach(key => {
+                if (key !== 'id') {
+                    content += `<div class="form-group">`;
+                    content += `<label for="${key}">${key.replace('_', ' ').toUpperCase()}:</label>`;
+                    
+                    if (key.includes('descripcion') || key.includes('texto')) {
+                        content += `<textarea id="${key}" name="${key}" required>${item[key]}</textarea>`;
+                    } else {
+                        content += `<input type="text" id="${key}" name="${key}" value="${item[key]}" required>`;
+                    }
+                    content += '</div>';
+                }
+            });
+            
+            content += '<div class="form-group">';
+            content += `<button type="submit" class="btn btn-success">Guardar Cambios</button>`;
+            content += '<button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>';
+            content += '</div>';
+            content += '</form>';
+            
+            document.getElementById('modalContent').innerHTML = content;
+            document.getElementById('modal').style.display = 'block';
+            
+            // manejar el envio del formulario
+            document.getElementById('editForm').onsubmit = function(e) {
+                e.preventDefault();
+                alert('Cambios guardados correctamente');
+                closeModal();
+            };
+        }
+
+        // eliminar elemento
+        function deleteItem(type, id) {
+            if (confirm('Estas seguro de eliminar este elemento?')) {
+                // quitar el elemento del array
+                allData[type] = allData[type].filter(item => item.id !== id);
+                renderTable(type);
+                alert('Elemento eliminado correctamente');
+            }
+        }
+
+        // mostrar modal para agregar nuevo elemento
+        function showModal(type) {
+            let content = `<h2>Agregar ${type.replace('add', '').charAt(0).toUpperCase() + type.replace('add', '').slice(1)}</h2>`;
+            content += '<form id="addForm">';
+            content += '<div class="form-group">';
+            content += '<p>Formulario para agregar nuevo elemento</p>';
+            content += '<button type="submit" class="btn btn-success">Agregar</button>';
+            content += '<button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>';
+            content += '</div>';
+            content += '</form>';
+            
+            document.getElementById('modalContent').innerHTML = content;
+            document.getElementById('modal').style.display = 'block';
+            
+            // manejar envio del formulario
+            document.getElementById('addForm').onsubmit = function(e) {
+                e.preventDefault();
+                alert('Elemento agregado correctamente');
+                closeModal();
+            };
+        }
+
+        // cerrar el modal
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        // generar PDFs de las tablas
+        function generatePDF(type) {
+            // por ahora solo mostramos alerta
+            alert(`Generando PDF de ${type}...`);
+            
+            // Usa TCPDF para generar el pdf
+            window.open(`${API_BASE_URL}admin/generate_pdf.php?type=${type}`, '_blank');
+        }
+
+        // configurar busqueda y filtros cuando carga la pagina
+        document.addEventListener('DOMContentLoaded', function() {
+            // configurar busqueda para cada seccion
+            ['usuarios', 'peliculas', 'resenas', 'generos'].forEach(type => {
+                const searchInput = document.getElementById(`search${type.charAt(0).toUpperCase() + type.slice(1)}`);
+                if (searchInput) {
+                    searchInput.addEventListener('input', function() {
+                        // aqui implementariamos busqueda en tiempo real
+                        console.log(`Buscando en ${type}:`, this.value);
+                    });
+                }
+                
+                const filterSelect = document.getElementById(`filter${type.charAt(0).toUpperCase() + type.slice(1)}`);
+                if (filterSelect) {
+                    filterSelect.addEventListener('change', function() {
+                        // aqui implementariamos filtrado
+                        console.log(`Filtrando ${type}:`, this.value);
+                    });
+                }
+            });
+        });
+
+        // cerrar modal cuando haces click fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        };
+    </script>
+</body>
+</html>

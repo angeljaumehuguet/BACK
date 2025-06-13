@@ -45,3 +45,8 @@
 [2025-06-11 20:51:21] [INFO] Nuevo usuario registrado: holamundo (ID: 8)
 [2025-06-11 20:52:19] [INFO] Usuario 1 creó película: Hola (ID: 10)
 [2025-06-11 20:52:53] [INFO] Usuario 1 creó reseña para película 10 (ID: 13)
+[2025-06-13 00:48:56] [INFO] Usuario 5 creó película: Joseo (ID: 11)
+[2025-06-13 00:49:55] [ERROR] Error en crear reseña: SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+[2025-06-13 00:59:02] [ERROR] Error en listar películas: Error de conexión a la base de datos: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2025-06-13 00:59:04] [ERROR] Error en listar películas: Error de conexión a la base de datos: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2025-06-13 01:03:58] [INFO] Usuario 5 creó reseña para película 11 (ID: 14)
