@@ -1,136 +1,30 @@
-[2025-06-11 06:41:41] [ERROR] Error en login: Error de conexión a la base de datos: SQLSTATE[HY000] [1045] Access denied for user 'root'@'localhost' (using password: NO)
-[2025-06-11 06:43:11] [ERROR] Error en login: Error de conexión a la base de datos: SQLSTATE[HY000] [1045] Access denied for user 'root'@'localhost' (using password: YES)
-[2025-06-11 06:46:46] [ERROR] Error en login: Error de conexión a la base de datos: SQLSTATE[HY000] [1045] Access denied for user 'root'@'localhost' (using password: YES)
-[2025-06-11 06:57:57] [ERROR] Error en login: Error de conexión a la base de datos: SQLSTATE[HY000] [1049] Unknown database 'cinefan_db'
-[2025-06-11 08:08:03] [ERROR] Error en login: SQLSTATE[HY093]: Invalid parameter number
-[2025-06-11 08:15:22] [ERROR] Error en login: SQLSTATE[HY093]: Invalid parameter number
-[2025-06-11 08:16:38] [ERROR] Error en login: SQLSTATE[HY093]: Invalid parameter number
-[2025-06-11 08:19:38] [ERROR] Error en login: SQLSTATE[HY093]: Invalid parameter number
-[2025-06-11 08:19:51] [ERROR] Error en login: SQLSTATE[HY093]: Invalid parameter number
-[2025-06-11 08:21:50] [ERROR] Error en login: SQLSTATE[HY093]: Invalid parameter number
-[2025-06-11 08:22:24] [ERROR] Error en login: SQLSTATE[HY093]: Invalid parameter number
-[2025-06-11 08:38:11] [ERROR] Error en feed: SQLSTATE[HY093]: Invalid parameter number
-[2025-06-11 08:38:36] [ERROR] Error en feed: SQLSTATE[HY093]: Invalid parameter number
-[2025-06-11 08:38:41] [ERROR] Error en feed: SQLSTATE[HY093]: Invalid parameter number
-[2025-06-11 08:43:28] [INFO] Nuevo usuario registrado: angel1 (ID: 5)
-[2025-06-11 08:53:07] [ERROR] Error en listar películas: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined
-[2025-06-11 08:53:17] [ERROR] Error en feed: SQLSTATE[HY093]: Invalid parameter number
-[2025-06-11 08:54:56] [ERROR] Error en feed: SQLSTATE[HY093]: Invalid parameter number
-[2025-06-11 08:57:40] [ERROR] Error en listar películas: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined
-[2025-06-11 08:57:44] [ERROR] Error en listar películas: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined
-[2025-06-11 08:59:54] [ERROR] Error en listar películas: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined
-[2025-06-11 09:00:22] [ERROR] Error en feed: SQLSTATE[HY093]: Invalid parameter number
-[2025-06-11 09:01:39] [ERROR] Error en listar películas: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined
-[2025-06-11 09:03:59] [ERROR] Error en feed: SQLSTATE[HY093]: Invalid parameter number
-[2025-06-11 09:09:08] [ERROR] Error en feed: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined
-[2025-06-11 09:11:19] [ERROR] Error en feed: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined
-[2025-06-11 09:46:27] [ERROR] Error en feed: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters
-[2025-06-11 09:47:21] [ERROR] Error en feed: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters
-[2025-06-11 09:47:24] [ERROR] Error en listar películas: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters
-[2025-06-11 10:02:41] [ERROR] Error en feed: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters
-[2025-06-11 10:02:44] [ERROR] Error en feed: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters
-[2025-06-11 10:03:22] [ERROR] Error en feed: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters
-[2025-06-11 10:03:31] [ERROR] Error en listar películas: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters
-[2025-06-11 10:03:38] [ERROR] Error en listar películas: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters
-[2025-06-11 10:03:45] [ERROR] Error en listar usuarios: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters
-[2025-06-11 10:04:56] [ERROR] Error en listar favoritos: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters
-[2025-06-11 10:09:37] [ERROR] Error en listar favoritos: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters
-[2025-06-11 10:19:16] [INFO] Nuevo usuario registrado: testuser1 (ID: 6)
-[2025-06-11 10:22:12] [INFO] Usuario 1 creó película: El Padrino (ID: 7)
-[2025-06-11 10:23:29] [ERROR] Error en detalle película: SQLSTATE[HY093]: Invalid parameter number
-[2025-06-11 10:23:38] [ERROR] Error en detalle película: SQLSTATE[HY093]: Invalid parameter number
-[2025-06-11 10:23:53] [ERROR] Error en búsqueda de películas: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters
-[2025-06-11 10:27:50] [ERROR] Error en crear reseña: SQLSTATE[23000]: Integrity constraint violation: 4025 CONSTRAINT `resenas.puntuacion` failed for `cinefan_db`.`resenas`
-[2025-06-11 10:27:54] [ERROR] Error en crear reseña: SQLSTATE[23000]: Integrity constraint violation: 4025 CONSTRAINT `resenas.puntuacion` failed for `cinefan_db`.`resenas`
-[2025-06-11 10:28:03] [ERROR] Error en crear reseña: SQLSTATE[23000]: Integrity constraint violation: 4025 CONSTRAINT `resenas.puntuacion` failed for `cinefan_db`.`resenas`
-[2025-06-11 10:29:57] [INFO] Usuario 1 dio like a reseña 2
-[2025-06-11 10:33:16] [ERROR] Error en listar seguimientos: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters
-[2025-06-11 10:33:32] [ERROR] Error en listar seguimientos: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters
-[2025-06-11 10:35:38] [ERROR] Error en búsqueda: SQLSTATE[HY093]: Invalid parameter number
-[2025-06-11 10:36:13] [ERROR] Error en búsqueda: SQLSTATE[HY093]: Invalid parameter number
-[2025-06-11 10:36:32] [ERROR] Error en búsqueda: SQLSTATE[HY093]: Invalid parameter number
-[2025-06-11 10:41:10] [ERROR] Error en listar seguimientos: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters
-[2025-06-13 06:52:26] [ERROR] Error en feed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cinefan_db.resenas_likes' doesn't exist
-[2025-06-13 06:52:26] [ERROR] API Error [500]: Error interno del servidor
-[2025-06-13 06:52:52] [ERROR] Error en feed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cinefan_db.resenas_likes' doesn't exist
-[2025-06-13 06:52:52] [ERROR] API Error [500]: Error interno del servidor
-[2025-06-13 06:55:34] [ERROR] Error en feed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cinefan_db.resenas_likes' doesn't exist
-[2025-06-13 06:55:34] [ERROR] API Error [500]: Error interno del servidor
-[2025-06-13 06:57:04] [ERROR] Error verificando usuario en token: Error de conexión a la base de datos: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
-[2025-06-13 06:57:07] [ERROR] Error verificando usuario en token: Error de conexión a la base de datos: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
-[2025-06-13 07:01:38] [ERROR] Error en feed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cinefan_db.resenas_likes' doesn't exist
-[2025-06-13 07:01:38] [ERROR] API Error [500]: Error interno del servidor
-[2025-06-13 07:02:25] [ERROR] Error en feed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cinefan_db.resenas_likes' doesn't exist
-[2025-06-13 07:02:25] [ERROR] API Error [500]: Error interno del servidor
-[2025-06-13 07:04:18] [ERROR] Error en feed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cinefan_db.resenas_likes' doesn't exist
-[2025-06-13 07:04:18] [ERROR] API Error [500]: Error interno del servidor
-[2025-06-13 07:04:54] [ERROR] Error en feed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cinefan_db.resenas_likes' doesn't exist
-[2025-06-13 07:04:54] [ERROR] API Error [500]: Error interno del servidor
-[2025-06-13 07:05:10] [ERROR] Error en feed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'r.fecha_creacion' in 'field list'
-[2025-06-13 07:05:10] [ERROR] API Error [500]: Error interno del servidor
-[2025-06-13 07:06:05] [INFO] Usuario 5 creó película: El Pepe (ID: 13)
-[2025-06-13 07:06:11] [ERROR] Error en feed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'r.fecha_creacion' in 'field list'
-[2025-06-13 07:06:11] [ERROR] API Error [500]: Error interno del servidor
-[2025-06-13 07:28:18] [INFO] Listando películas - Usuario: 5, Página: 1
-[2025-06-13 07:28:18] [ERROR] Error PDO en listar películas: SQLSTATE[HY093]: Invalid parameter number
-[2025-06-13 07:29:15] [INFO] Iniciando carga de feed - Usuario: 5, Página: 1
-[2025-06-13 07:29:15] [INFO] Feed cargado exitosamente - Usuario: 5, Reseñas: 10
-[2025-06-13 07:29:18] [INFO] Iniciando carga de feed - Usuario: 5, Página: 2
-[2025-06-13 07:29:18] [INFO] Feed cargado exitosamente - Usuario: 5, Reseñas: 2
-[2025-06-13 07:29:39] [INFO] Iniciando carga de feed - Usuario: 5, Página: 1
-[2025-06-13 07:29:39] [INFO] Feed cargado exitosamente - Usuario: 5, Reseñas: 10
-[2025-06-13 07:29:40] [INFO] Listando películas - Usuario: 5, Página: 1
-[2025-06-13 07:29:40] [ERROR] Error PDO en listar películas: SQLSTATE[HY093]: Invalid parameter number
-[2025-06-13 07:30:34] [INFO] Listando películas - Usuario: 5, Página: 1
-[2025-06-13 07:30:34] [ERROR] Error PDO en listar películas: SQLSTATE[HY093]: Invalid parameter number
-[2025-06-13 07:30:38] [INFO] Listando películas - Usuario: 5, Página: 1
-[2025-06-13 07:30:38] [ERROR] Error PDO en listar películas: SQLSTATE[HY093]: Invalid parameter number
-[2025-06-13 07:31:01] [INFO] Iniciando carga de feed - Usuario: 5, Página: 1
-[2025-06-13 07:31:01] [INFO] Feed cargado exitosamente - Usuario: 5, Reseñas: 10
-[2025-06-13 07:48:24] [INFO] Listando películas - Usuario: 5, Página: 1
-[2025-06-13 07:48:24] [INFO] Películas listadas exitosamente - Usuario: 5, Total: 13
-[2025-06-13 07:48:45] [ERROR] Error en editar película: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'fecha_modificacion' in 'field list'
-[2025-06-13 07:48:45] [ERROR] API Error [500]: Error interno del servidor
-[2025-06-13 07:50:00] [INFO] Listando películas - Usuario: 5, Página: 1
-[2025-06-13 07:50:00] [INFO] Películas listadas exitosamente - Usuario: 5, Total: 13
-[2025-06-13 07:50:19] [INFO] Usuario 5 creó película: probaa (ID: 14)
-[2025-06-13 07:50:19] [INFO] Listando películas - Usuario: 5, Página: 1
-[2025-06-13 07:50:19] [INFO] Películas listadas exitosamente - Usuario: 5, Total: 14
-[2025-06-13 07:50:29] [ERROR] API Error [400]: ID de reseña requerido
-[2025-06-13 07:50:52] [ERROR] API Error [400]: ID de reseña requerido
-[2025-06-13 07:51:27] [INFO] Listando películas - Usuario: 5, Página: 1
-[2025-06-13 07:51:27] [INFO] Películas listadas exitosamente - Usuario: 5, Total: 14
-[2025-06-13 07:51:32] [INFO] Usuario 5 actualizó reseña 14 de película: Joseo
-[2025-06-13 07:51:36] [INFO] Listando películas - Usuario: 5, Página: 1
-[2025-06-13 07:51:36] [INFO] Películas listadas exitosamente - Usuario: 5, Total: 14
-[2025-06-13 07:51:39] [INFO] Usuario 5 actualizó reseña 14 de película: Joseo
-[2025-06-13 07:51:41] [INFO] Listando películas - Usuario: 5, Página: 1
-[2025-06-13 07:51:41] [INFO] Películas listadas exitosamente - Usuario: 5, Total: 14
-[2025-06-13 07:51:43] [INFO] Usuario 5 actualizó reseña 14 de película: Joseo
-[2025-06-13 07:52:06] [INFO] Iniciando carga de feed - Usuario: 5, Página: 1
-[2025-06-13 07:52:06] [INFO] Feed cargado exitosamente - Usuario: 5, Reseñas: 10
-[2025-06-13 07:52:11] [INFO] Listando películas - Usuario: 5, Página: 1
-[2025-06-13 07:52:11] [INFO] Películas listadas exitosamente - Usuario: 5, Total: 14
-[2025-06-13 07:52:29] [INFO] Usuario 5 creó reseña para película 4 (ID: 16)
-[2025-06-13 07:52:29] [INFO] Iniciando carga de feed - Usuario: 5, Página: 1
-[2025-06-13 07:52:29] [INFO] Feed cargado exitosamente - Usuario: 5, Reseñas: 10
-[2025-06-13 07:52:36] [INFO] Iniciando carga de feed - Usuario: 5, Página: 1
-[2025-06-13 07:52:36] [INFO] Feed cargado exitosamente - Usuario: 5, Reseñas: 10
-[2025-06-13 07:53:57] [INFO] Listando películas - Usuario: 5, Página: 1
-[2025-06-13 07:53:57] [INFO] Películas listadas exitosamente - Usuario: 5, Total: 14
-[2025-06-13 07:57:16] [INFO] Listando películas - Usuario: 5, Página: 1
-[2025-06-13 07:57:16] [INFO] Películas listadas exitosamente - Usuario: 5, Total: 14
-[2025-06-13 07:57:26] [ERROR] Error en editar película: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'fecha_modificacion' in 'field list'
-[2025-06-13 07:57:26] [ERROR] API Error [500]: Error interno del servidor
-[2025-06-13 07:57:34] [ERROR] Error en editar película: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'fecha_modificacion' in 'field list'
-[2025-06-13 07:57:34] [ERROR] API Error [500]: Error interno del servidor
-[2025-06-13 07:57:48] [ERROR] Error en editar película: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'fecha_modificacion' in 'field list'
-[2025-06-13 07:57:48] [ERROR] API Error [500]: Error interno del servidor
-[2025-06-13 07:58:20] [INFO] Iniciando carga de feed - Usuario: 5, Página: 1
-[2025-06-13 07:58:20] [INFO] Feed cargado exitosamente - Usuario: 5, Reseñas: 10
-[2025-06-13 07:58:24] [INFO] Listando películas - Usuario: 5, Página: 1
-[2025-06-13 07:58:24] [INFO] Películas listadas exitosamente - Usuario: 5, Total: 14
-[2025-06-13 07:58:29] [ERROR] Error: ID de reseña no válido. GET: [], POST: 
-[2025-06-13 07:58:29] [ERROR] API Error [400]: ID de reseña requerido y debe ser un número válido
-[2025-06-13 07:58:44] [ERROR] Error: ID de reseña no válido. GET: [], POST: 
-[2025-06-13 07:58:44] [ERROR] API Error [400]: ID de reseña requerido y debe ser un número válido
+[2025-06-13 08:26:37] CineFan [INFO]: Listando películas - Usuario: 5, Página: 1
+[2025-06-13 08:26:37] CineFan [INFO]: Películas listadas exitosamente - Usuario: 5, Total: 14
+[2025-06-13 08:26:57] CineFan [INFO]: Usuario autenticado: ID=5
+[2025-06-13 08:26:57] CineFan [DEBUG]: Input recibido: {"id":14,"titulo":"probaaaaaaa","director":"probaaaa","ano_lanzamiento":2015,"duracion_minutos":100,"genero_id":1}
+[2025-06-13 08:26:57] CineFan [INFO]: Procesando edición de película ID: 14
+[2025-06-13 08:26:57] CineFan [DEBUG]: Campo a actualizar: titulo = 'probaaaaaaa'
+[2025-06-13 08:26:57] CineFan [DEBUG]: Campo a actualizar: director = 'probaaaa'
+[2025-06-13 08:26:57] CineFan [DEBUG]: Campo a actualizar: ano_lanzamiento = '2015'
+[2025-06-13 08:26:57] CineFan [DEBUG]: Campo a actualizar: genero_id = '1'
+[2025-06-13 08:26:57] CineFan [DEBUG]: Campo a actualizar: duracion_minutos = '100'
+[2025-06-13 08:26:57] CineFan [INFO]: Género válido: Acción
+[2025-06-13 08:26:57] CineFan [DEBUG]: Agregando fecha_modificacion al UPDATE
+[2025-06-13 08:26:57] CineFan [DEBUG]: SQL: UPDATE peliculas 
+                  SET titulo = ?, director = ?, ano_lanzamiento = ?, genero_id = ?, duracion_minutos = ?, fecha_modificacion = NOW()
+                  WHERE id = ?
+[2025-06-13 08:26:57] CineFan [DEBUG]: Parámetros: ["probaaaaaaa","probaaaa",2015,1,100,14]
+[2025-06-13 08:26:57] CineFan [INFO]: Actualización exitosa. Filas afectadas: 1
+[2025-06-13 08:26:57] CineFan [INFO]: Usuario 5 actualizó película: probaaaaaaa (ID: 14)
+[2025-06-13 08:26:57] CineFan [INFO]: Listando películas - Usuario: 5, Página: 1
+[2025-06-13 08:26:57] CineFan [INFO]: Películas listadas exitosamente - Usuario: 5, Total: 14
+[2025-06-13 08:27:19] CineFan [INFO]: Listando películas - Usuario: 5, Página: 1
+[2025-06-13 08:27:19] CineFan [INFO]: Películas listadas exitosamente - Usuario: 5, Total: 14
+[2025-06-13 08:27:26] CineFan [INFO]: Usuario 5 actualizó reseña 16 de película: John Wick: Chapter 4
+[2025-06-13 08:27:40] CineFan [INFO]: Usuario autenticado: ID=5
+[2025-06-13 08:27:40] CineFan [DEBUG]: Método HTTP: DELETE
+[2025-06-13 08:27:40] CineFan [DEBUG]: GET params: []
+[2025-06-13 08:27:40] CineFan [DEBUG]: POST params: []
+[2025-06-13 08:27:40] CineFan [DEBUG]: Raw input: vacío
+[2025-06-13 08:27:40] CineFan [ERROR]: ERROR: ID de reseña no válido. Debug: {"method":"DELETE","get":[],"post":[],"path_info":null,"raw_body":"","content_type":"application\/json","content_length":"0"}
+[2025-06-13 08:27:40] CineFan [ERROR]: API Error [400]: ID de reseña requerido. Recibido: null. Revisa que estés enviando el parámetro "id" correctamente.

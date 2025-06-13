@@ -11,10 +11,10 @@ class Utils {
      */
     public static function log($mensaje, $nivel = 'INFO') {
         $timestamp = date('Y-m-d H:i:s');
-        $logMessage = "[$timestamp] [$nivel] $mensaje" . PHP_EOL;
+        $logMessage = "[$timestamp] CineFan [$nivel]: $mensaje" . PHP_EOL;
         
         // Escribir a archivo de log
-        $logFile = '../logs/cinefan.log';
+        $logFile = __DIR__ . '/../logs/cinefan.log';
         
         // Crear directorio de logs si no existe
         $logDir = dirname($logFile);
@@ -62,19 +62,30 @@ class Utils {
             } elseif ($diferencia->i > 0) {
                 return $diferencia->i == 1 ? 'Hace 1 minuto' : 'Hace ' . $diferencia->i . ' minutos';
             } else {
-                return 'Hace un momento';
+                return 'Hace unos segundos';
             }
+            
         } catch (Exception $e) {
-            // Si hay error, devolver fecha formateada
-            return date('d/m/Y H:i', strtotime($fechaCreacion));
+            self::log("Error en timeAgo: " . $e->getMessage(), 'ERROR');
+            return 'Fecha inválida';
         }
     }
     
     /**
-     * Validar puntuación (1-5)
+     * Validar puntuación de reseña (1-5 estrellas)
      */
-    public static function validateRating($puntuacion) {
-        return is_numeric($puntuacion) && $puntuacion >= 1 && $puntuacion <= 5;
+    public static function validateRating($rating) {
+        return is_numeric($rating) && $rating >= 1 && $rating <= 5;
+    }
+    
+    /**
+     * Sanitizar texto para prevenir XSS
+     */
+    public static function sanitizeText($text) {
+        if (empty($text)) {
+            return '';
+        }
+        return htmlspecialchars(strip_tags(trim($text)), ENT_QUOTES, 'UTF-8');
     }
     
     /**
@@ -85,339 +96,170 @@ class Utils {
     }
     
     /**
-     * Generar ID único
+     * Validar URL
      */
-    public static function generateUniqueId() {
-        return uniqid(time(), true);
-    }
-    
-    /**
-     * Limpiar texto para evitar XSS
-     */
-    public static function sanitizeHtml($texto) {
-        return htmlspecialchars($texto, ENT_QUOTES, 'UTF-8');
-    }
-    
-    /**
-     * Formatear fecha para respuesta API
-     */
-    public static function formatApiDate($fecha) {
-        if (is_string($fecha)) {
-            $fecha = new DateTime($fecha);
-        }
-        return $fecha->format('Y-m-d H:i:s');
-    }
-    
-    /**
-     * Validar URL de imagen
-     */
-    public static function isValidImageUrl($url) {
-        if (empty($url)) {
-            return true; // URL vacía es válida (opcional)
-        }
-        
+    public static function validateUrl($url) {
         return filter_var($url, FILTER_VALIDATE_URL) !== false;
     }
     
     /**
-     * Generar slug amigable
-     */
-    public static function generateSlug($texto) {
-        $texto = strtolower($texto);
-        $texto = preg_replace('/[^a-z0-9]+/', '-', $texto);
-        $texto = trim($texto, '-');
-        return $texto;
-    }
-    
-    /**
-     * Formatear duración en minutos a formato legible
-     */
-    public static function formatDuration($minutos) {
-        if ($minutos < 60) {
-            return $minutos . 'min';
-        }
-        
-        $horas = floor($minutos / 60);
-        $mins = $minutos % 60;
-        
-        if ($mins == 0) {
-            return $horas . 'h';
-        }
-        
-        return $horas . 'h ' . $mins . 'min';
-    }
-    
-    /**
-     * Obtener IP del cliente
-     */
-    public static function getClientIp() {
-        $ipKeys = ['HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR'];
-        
-        foreach ($ipKeys as $key) {
-            if (array_key_exists($key, $_SERVER) && !empty($_SERVER[$key])) {
-                $ips = explode(',', $_SERVER[$key]);
-                return trim($ips[0]);
-            }
-        }
-        
-        return 'unknown';
-    }
-    
-    /**
-     * Generar token seguro
+     * Generar token aleatorio seguro
      */
     public static function generateSecureToken($length = 32) {
         if (function_exists('random_bytes')) {
             return bin2hex(random_bytes($length / 2));
+        } else {
+            return bin2hex(openssl_random_pseudo_bytes($length / 2));
         }
-        
-        // Fallback para versiones antiguas de PHP
-        return bin2hex(openssl_random_pseudo_bytes($length / 2));
     }
     
     /**
-     * Verificar si string está vacío o es solo espacios
+     * Formatear duración en minutos a horas y minutos
      */
-    public static function isEmptyString($str) {
-        return empty(trim($str));
+    public static function formatDuration($minutes) {
+        if ($minutes < 60) {
+            return $minutes . ' min';
+        }
+        
+        $hours = floor($minutes / 60);
+        $remainingMinutes = $minutes % 60;
+        
+        if ($remainingMinutes == 0) {
+            return $hours . 'h';
+        }
+        
+        return $hours . 'h ' . $remainingMinutes . 'min';
     }
     
     /**
      * Truncar texto con elipsis
      */
-    public static function truncateText($texto, $maxLength = 100, $suffix = '...') {
-        if (strlen($texto) <= $maxLength) {
-            return $texto;
+    public static function truncateText($text, $maxLength = 150) {
+        if (strlen($text) <= $maxLength) {
+            return $text;
         }
         
-        return substr($texto, 0, $maxLength - strlen($suffix)) . $suffix;
+        return substr($text, 0, $maxLength - 3) . '...';
     }
     
     /**
-     * Convertir array a objeto para JSON
+     * Obtener IP del cliente
      */
-    public static function arrayToObject($array) {
-        return json_decode(json_encode($array));
-    }
-    
-    /**
-     * Verificar si es una petición AJAX
-     */
-    public static function isAjaxRequest() {
-        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && 
-               strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
-    }
-    
-    /**
-     * Obtener user agent del cliente
-     */
-    public static function getUserAgent() {
-        return $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
-    }
-    
-    /**
-     * Debug: imprimir variable con formato
-     */
-    public static function debug($variable, $die = false) {
-        if (defined('DEBUG_MODE') && DEBUG_MODE) {
-            echo '<pre>';
-            print_r($variable);
-            echo '</pre>';
-            
-            if ($die) {
-                die();
+    public static function getClientIP() {
+        $ipKeys = ['HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR'];
+        
+        foreach ($ipKeys as $key) {
+            if (array_key_exists($key, $_SERVER) === true) {
+                foreach (explode(',', $_SERVER[$key]) as $ip) {
+                    $ip = trim($ip);
+                    if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false) {
+                        return $ip;
+                    }
+                }
             }
         }
-    }
-    
-    /**
-     * Validar longitud de cadena
-     */
-    public static function validateStringLength($texto, $minLength = 1, $maxLength = 255) {
-        $length = strlen(trim($texto));
-        return $length >= $minLength && $length <= $maxLength;
-    }
-    
-    /**
-     * Formatear número con separadores de miles
-     */
-    public static function formatNumber($numero, $decimales = 0) {
-        return number_format($numero, $decimales, ',', '.');
-    }
-    
-    /**
-     * Convertir bytes a formato legible
-     */
-    public static function formatBytes($bytes, $precision = 2) {
-        $units = array('B', 'KB', 'MB', 'GB', 'TB');
         
-        for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
-            $bytes /= 1024;
+        return $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    }
+    
+    /**
+     * Convertir array a formato CSV
+     */
+    public static function arrayToCSV($array) {
+        if (empty($array)) {
+            return '';
         }
         
-        return round($bytes, $precision) . ' ' . $units[$i];
-    }
-    
-    /**
-     * Validar que un valor esté en un array de opciones válidas
-     */
-    public static function validateInArray($valor, $opciones) {
-        return in_array($valor, $opciones, true);
-    }
-    
-    /**
-     * Generar hash MD5 de un archivo
-     */
-    public static function getFileHash($filePath) {
-        if (file_exists($filePath)) {
-            return md5_file($filePath);
-        }
-        return false;
-    }
-    
-    /**
-     * Limpiar y validar número entero
-     */
-    public static function cleanInt($valor, $default = 0) {
-        $cleaned = filter_var($valor, FILTER_VALIDATE_INT);
-        return $cleaned !== false ? $cleaned : $default;
-    }
-    
-    /**
-     * Limpiar y validar número flotante
-     */
-    public static function cleanFloat($valor, $default = 0.0) {
-        $cleaned = filter_var($valor, FILTER_VALIDATE_FLOAT);
-        return $cleaned !== false ? $cleaned : $default;
-    }
-    
-    /**
-     * Verificar si una fecha es válida
-     */
-    public static function isValidDate($fecha, $formato = 'Y-m-d') {
-        $dateTime = DateTime::createFromFormat($formato, $fecha);
-        return $dateTime && $dateTime->format($formato) === $fecha;
-    }
-    
-    /**
-     * Generar código QR simple (requiere librería externa)
-     */
-    public static function generateQRCode($texto, $size = 150) {
-        // Implementación básica usando API externa
-        $url = "https://api.qrserver.com/v1/create-qr-code/";
-        $params = http_build_query([
-            'size' => $size . 'x' . $size,
-            'data' => $texto
-        ]);
+        $output = fopen('php://temp', 'r+');
         
-        return $url . '?' . $params;
+        // Escribir headers
+        fputcsv($output, array_keys($array[0]));
+        
+        // Escribir datos
+        foreach ($array as $row) {
+            fputcsv($output, $row);
+        }
+        
+        rewind($output);
+        $csv = stream_get_contents($output);
+        fclose($output);
+        
+        return $csv;
     }
     
     /**
-     * Calcular edad a partir de fecha de nacimiento
+     * Validar que una cadena no contenga HTML peligroso
      */
-    public static function calculateAge($fechaNacimiento) {
+    public static function isSafeHTML($html) {
+        // Lista de etiquetas peligrosas
+        $dangerousTags = [
+            'script', 'iframe', 'object', 'embed', 'form', 
+            'input', 'button', 'select', 'textarea', 'link', 'meta'
+        ];
+        
+        $html = strtolower($html);
+        
+        foreach ($dangerousTags as $tag) {
+            if (strpos($html, '<' . $tag) !== false) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Calcular tamaño de archivo legible
+     */
+    public static function formatBytes($size, $precision = 2) {
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        
+        for ($i = 0; $size > 1024 && $i < count($units) - 1; $i++) {
+            $size /= 1024;
+        }
+        
+        return round($size, $precision) . ' ' . $units[$i];
+    }
+    
+    /**
+     * Verificar si una tabla existe en la base de datos
+     */
+    public static function tableExists($tableName, $connection) {
         try {
-            $nacimiento = new DateTime($fechaNacimiento);
-            $hoy = new DateTime();
-            $edad = $hoy->diff($nacimiento);
-            return $edad->y;
+            $stmt = $connection->prepare("SHOW TABLES LIKE ?");
+            $stmt->execute([$tableName]);
+            return $stmt->rowCount() > 0;
         } catch (Exception $e) {
-            return 0;
+            self::log("Error verificando tabla {$tableName}: " . $e->getMessage(), 'ERROR');
+            return false;
         }
     }
     
     /**
-     * Validar código postal español
+     * Verificar si una columna existe en una tabla
      */
-    public static function validateSpanishPostalCode($codigoPostal) {
-        return preg_match('/^[0-5][0-9]{4}$/', $codigoPostal);
-    }
-    
-    /**
-     * Generar contraseña aleatoria
-     */
-    public static function generateRandomPassword($length = 12) {
-        $caracteres = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*';
-        $password = '';
-        
-        for ($i = 0; $i < $length; $i++) {
-            $password .= $caracteres[rand(0, strlen($caracteres) - 1)];
+    public static function columnExists($tableName, $columnName, $connection) {
+        try {
+            $stmt = $connection->prepare("SHOW COLUMNS FROM `{$tableName}` LIKE ?");
+            $stmt->execute([$columnName]);
+            return $stmt->rowCount() > 0;
+        } catch (Exception $e) {
+            self::log("Error verificando columna {$columnName} en tabla {$tableName}: " . $e->getMessage(), 'ERROR');
+            return false;
         }
-        
-        return $password;
     }
 }
 
-// Funciones helper globales
-
-/**
- * Función helper para logging rápido
- */
-function logInfo($mensaje) {
-    Utils::log($mensaje, 'INFO');
+// Funciones helper globales para compatibilidad
+if (!function_exists('timeAgo')) {
+    function timeAgo($date) {
+        return Utils::timeAgo($date);
+    }
 }
 
-function logError($mensaje) {
-    Utils::log($mensaje, 'ERROR');
+if (!function_exists('logMessage')) {
+    function logMessage($message, $level = 'INFO') {
+        Utils::log($message, $level);
+    }
 }
-
-function logWarning($mensaje) {
-    Utils::log($mensaje, 'WARNING');
-}
-
-function logDebug($mensaje) {
-    Utils::log($mensaje, 'DEBUG');
-}
-
-/**
- * Función helper para respuestas JSON rápidas
- */
-function jsonResponse($data, $success = true, $message = '') {
-    header('Content-Type: application/json; charset=utf-8');
-    echo json_encode([
-        'exito' => $success,
-        'mensaje' => $message,
-        'datos' => $data,
-        'timestamp' => date('Y-m-d H:i:s')
-    ], JSON_UNESCAPED_UNICODE);
-    exit;
-}
-
-/**
- * Función helper para errores JSON rápidos
- */
-function jsonError($message, $code = 400) {
-    http_response_code($code);
-    jsonResponse(null, false, $message);
-}
-
-/**
- * Función helper para sanitizar entrada
- */
-function sanitizeInput($input) {
-    return Utils::sanitizeHtml(trim($input));
-}
-
-/**
- * Función helper para validar email
- */
-function isValidEmail($email) {
-    return Utils::validateEmail($email);
-}
-
-/**
- * Función helper para formatear tiempo transcurrido
- */
-function timeAgo($fecha) {
-    return Utils::timeAgo($fecha);
-}
-
-/**
- * Función helper para validar puntuación
- */
-function isValidRating($puntuacion) {
-    return Utils::validateRating($puntuacion);
-}
-
 ?>

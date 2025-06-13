@@ -7,35 +7,38 @@ require_once '../includes/functions.php';
 require_once '../config/config.php';
 
 // Validar método
-Response::validateMethod(['PUT', 'PATCH']);
+Response::validateMethod(['PUT', 'PATCH', 'POST']);
 
 try {
     // Autenticación requerida
     $authData = Auth::requireAuth();
     $userId = $authData['user_id'];
+    Utils::log("Usuario autenticado: ID={$userId}", 'INFO');
     
     // Obtener datos de entrada
     $input = Response::getJsonInput();
+    Utils::log("Input recibido: " . json_encode($input), 'DEBUG');
     
     if (empty($input)) {
+        Utils::log("ERROR: Input vacío", 'ERROR');
         Response::error('Datos requeridos para actualizar', 400);
     }
     
-    // OBTENER ID DE PELÍCULA CORRECTAMENTE
+    // OBTENER ID DE PELÍCULA
     $peliculaId = null;
     
-    // Primero intentar desde URL (?id=X)
-    if (isset($_GET['id'])) {
+    if (isset($_GET['id']) && !empty($_GET['id'])) {
         $peliculaId = (int)$_GET['id'];
-    }
-    // Si no está en URL, intentar desde JSON body
-    elseif (isset($input['id'])) {
+    } elseif (isset($input['id']) && !empty($input['id'])) {
         $peliculaId = (int)$input['id'];
     }
     
-    if (!$peliculaId) {
-        Response::error('ID de película requerido', 400);
+    if (!$peliculaId || $peliculaId <= 0) {
+        Utils::log("ERROR: ID de película inválido: {$peliculaId}", 'ERROR');
+        Response::error('ID de película requerido y debe ser mayor a 0', 400);
     }
+    
+    Utils::log("Procesando edición de película ID: {$peliculaId}", 'INFO');
     
     $db = getDatabase();
     $conn = $db->getConnection();
@@ -50,11 +53,13 @@ try {
     $pelicula = $checkStmt->fetch(PDO::FETCH_ASSOC);
     
     if (!$pelicula) {
+        Utils::log("ERROR: Película no encontrada. ID: {$peliculaId}", 'ERROR');
         Response::error('Película no encontrada', 404);
     }
     
     // Verificar propiedad
     if ($pelicula['id_usuario_creador'] != $userId) {
+        Utils::log("ERROR: Usuario {$userId} no es propietario de película {$peliculaId}", 'ERROR');
         Response::error('No tienes permisos para editar esta película', 403);
     }
     
@@ -68,13 +73,16 @@ try {
     $parametros = [];
     
     foreach ($camposPermitidos as $campo) {
-        if (isset($input[$campo])) {
+        if (isset($input[$campo]) && $input[$campo] !== null && $input[$campo] !== '') {
+            $valor = Response::sanitizeInput($input[$campo]);
             $datosActualizar[] = "$campo = ?";
-            $parametros[] = Response::sanitizeInput($input[$campo]);
+            $parametros[] = $valor;
+            Utils::log("Campo a actualizar: {$campo} = '{$valor}'", 'DEBUG');
         }
     }
     
     if (empty($datosActualizar)) {
+        Utils::log("ERROR: No hay datos válidos para actualizar", 'ERROR');
         Response::error('No hay datos válidos para actualizar', 400);
     }
     
@@ -82,41 +90,61 @@ try {
     if (isset($input['ano_lanzamiento'])) {
         $ano = (int)$input['ano_lanzamiento'];
         if ($ano < 1890 || $ano > date('Y') + 5) {
-            Response::error('Año de lanzamiento inválido', 400);
+            Utils::log("ERROR: Año inválido: {$ano}", 'ERROR');
+            Response::error('Año de lanzamiento inválido (1890-' . (date('Y') + 5) . ')', 400);
         }
     }
     
     if (isset($input['duracion_minutos'])) {
         $duracion = (int)$input['duracion_minutos'];
         if ($duracion < 1 || $duracion > 600) {
+            Utils::log("ERROR: Duración inválida: {$duracion}", 'ERROR');
             Response::error('Duración inválida (1-600 minutos)', 400);
         }
     }
     
+    // VALIDACIÓN DE GÉNERO
     if (isset($input['genero_id'])) {
         $generoId = (int)$input['genero_id'];
-        $generoCheckSql = "SELECT id FROM generos WHERE id = ?";
+        $generoCheckSql = "SELECT id, nombre FROM generos WHERE id = ? AND activo = 1";
         $generoStmt = $conn->prepare($generoCheckSql);
         $generoStmt->execute([$generoId]);
+        $generoData = $generoStmt->fetch(PDO::FETCH_ASSOC);
         
-        if (!$generoStmt->fetch()) {
+        if (!$generoData) {
+            Utils::log("ERROR: Género no válido: {$generoId}", 'ERROR');
             Response::error('Género no válido', 400);
         }
+        Utils::log("Género válido: {$generoData['nombre']}", 'INFO');
     }
     
-    // Agregar fecha de modificación y ID para WHERE
-    $datosActualizar[] = "fecha_modificacion = NOW()";
-    $parametros[] = $peliculaId;
+    // AGREGAR FECHA_MODIFICACION SOLO SI LA COLUMNA EXISTE
+    $columnsQuery = "SHOW COLUMNS FROM peliculas LIKE 'fecha_modificacion'";
+    $columnsStmt = $conn->query($columnsQuery);
+    if ($columnsStmt->rowCount() > 0) {
+        $datosActualizar[] = "fecha_modificacion = NOW()";
+        Utils::log("Agregando fecha_modificacion al UPDATE", 'DEBUG');
+    } else {
+        Utils::log("Columna fecha_modificacion no existe, saltando...", 'WARNING');
+    }
     
-    // CONSTRUIR Y EJECUTAR CONSULTA DE ACTUALIZACIÓN
+    $parametros[] = $peliculaId; // Para la cláusula WHERE
+    
+    // CONSTRUIR Y EJECUTAR CONSULTA
     $updateSql = "UPDATE peliculas 
                   SET " . implode(', ', $datosActualizar) . "
                   WHERE id = ?";
     
+    Utils::log("SQL: " . $updateSql, 'DEBUG');
+    Utils::log("Parámetros: " . json_encode($parametros), 'DEBUG');
+    
     $updateStmt = $conn->prepare($updateSql);
     
     if ($updateStmt->execute($parametros)) {
-        // OBTENER DATOS ACTUALIZADOS CON TIMEAGO
+        $filasAfectadas = $updateStmt->rowCount();
+        Utils::log("Actualización exitosa. Filas afectadas: {$filasAfectadas}", 'INFO');
+        
+        // OBTENER DATOS ACTUALIZADOS
         $selectSql = "SELECT p.*, g.nombre as genero_nombre, g.color_hex as genero_color
                       FROM peliculas p
                       LEFT JOIN generos g ON p.genero_id = g.id
@@ -126,9 +154,23 @@ try {
         $selectStmt->execute([$peliculaId]);
         $peliculaActualizada = $selectStmt->fetch(PDO::FETCH_ASSOC);
         
+        if (!$peliculaActualizada) {
+            Utils::log("ERROR: No se pudieron obtener los datos actualizados", 'ERROR');
+            Response::error('Error obteniendo datos actualizados', 500);
+        }
+        
         Utils::log("Usuario {$userId} actualizó película: {$peliculaActualizada['titulo']} (ID: {$peliculaId})", 'INFO');
         
-        // FORMATEAR RESPUESTA CON DATOS COMPLETOS
+        // FORMATEAR RESPUESTA CON MANEJO SEGURO DE FECHA
+        $tiempoTranscurrido = 'hace un momento';
+        if (function_exists('Utils::timeAgo')) {
+            try {
+                $tiempoTranscurrido = Utils::timeAgo($peliculaActualizada['fecha_creacion']);
+            } catch (Exception $e) {
+                Utils::log("Error en timeAgo: " . $e->getMessage(), 'WARNING');
+            }
+        }
+        
         $response = [
             'id' => (int)$peliculaActualizada['id'],
             'titulo' => $peliculaActualizada['titulo'],
@@ -138,8 +180,8 @@ try {
             'sinopsis' => $peliculaActualizada['sinopsis'],
             'imagen_url' => $peliculaActualizada['imagen_url'],
             'fecha_creacion' => $peliculaActualizada['fecha_creacion'],
-            'fecha_modificacion' => $peliculaActualizada['fecha_modificacion'],
-            'tiempo_transcurrido' => Utils::timeAgo($peliculaActualizada['fecha_creacion']),
+            'fecha_modificacion' => $peliculaActualizada['fecha_modificacion'] ?? $peliculaActualizada['fecha_creacion'],
+            'tiempo_transcurrido' => $tiempoTranscurrido,
             'genero' => [
                 'id' => (int)$peliculaActualizada['genero_id'],
                 'nombre' => $peliculaActualizada['genero_nombre'] ?? 'Sin género',
@@ -150,11 +192,13 @@ try {
         Response::success($response, 'Película actualizada exitosamente');
         
     } else {
-        Response::error('Error al actualizar la película', 500);
+        $errorInfo = $updateStmt->errorInfo();
+        Utils::log("ERROR en ejecución SQL: " . json_encode($errorInfo), 'ERROR');
+        Response::error('Error al actualizar la película: ' . $errorInfo[2], 500);
     }
     
 } catch (Exception $e) {
-    Utils::log("Error en editar película: " . $e->getMessage(), 'ERROR');
-    Response::error('Error interno del servidor', 500);
+    Utils::log("EXCEPCIÓN en editar película: " . $e->getMessage(), 'ERROR');
+    Response::error('Error interno del servidor: ' . $e->getMessage(), 500);
 }
 ?>
