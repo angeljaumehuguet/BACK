@@ -1,0 +1,151 @@
+[13-Jun-2025 08:26:37 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 08:26:37 Europe/Madrid] CineFan [INFO]: Listando películas - Usuario: 5, Página: 1
+[13-Jun-2025 08:26:37 Europe/Madrid] CineFan [INFO]: Películas listadas exitosamente - Usuario: 5, Total: 14
+[13-Jun-2025 08:26:41 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 08:26:57 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 08:26:57 Europe/Madrid] CineFan [INFO]: Usuario autenticado: ID=5
+[13-Jun-2025 08:26:57 Europe/Madrid] CineFan [DEBUG]: Input recibido: {"id":14,"titulo":"probaaaaaaa","director":"probaaaa","ano_lanzamiento":2015,"duracion_minutos":100,"genero_id":1}
+[13-Jun-2025 08:26:57 Europe/Madrid] CineFan [INFO]: Procesando edición de película ID: 14
+[13-Jun-2025 08:26:57 Europe/Madrid] CineFan [DEBUG]: Campo a actualizar: titulo = 'probaaaaaaa'
+[13-Jun-2025 08:26:57 Europe/Madrid] CineFan [DEBUG]: Campo a actualizar: director = 'probaaaa'
+[13-Jun-2025 08:26:57 Europe/Madrid] CineFan [DEBUG]: Campo a actualizar: ano_lanzamiento = '2015'
+[13-Jun-2025 08:26:57 Europe/Madrid] CineFan [DEBUG]: Campo a actualizar: genero_id = '1'
+[13-Jun-2025 08:26:57 Europe/Madrid] CineFan [DEBUG]: Campo a actualizar: duracion_minutos = '100'
+[13-Jun-2025 08:26:57 Europe/Madrid] CineFan [INFO]: Género válido: Acción
+[13-Jun-2025 08:26:57 Europe/Madrid] CineFan [DEBUG]: Agregando fecha_modificacion al UPDATE
+[13-Jun-2025 08:26:57 Europe/Madrid] CineFan [DEBUG]: SQL: UPDATE peliculas 
+                  SET titulo = ?, director = ?, ano_lanzamiento = ?, genero_id = ?, duracion_minutos = ?, fecha_modificacion = NOW()
+                  WHERE id = ?
+[13-Jun-2025 08:26:57 Europe/Madrid] CineFan [DEBUG]: Parámetros: ["probaaaaaaa","probaaaa",2015,1,100,14]
+[13-Jun-2025 08:26:57 Europe/Madrid] CineFan [INFO]: Actualización exitosa. Filas afectadas: 1
+[13-Jun-2025 08:26:57 Europe/Madrid] CineFan [INFO]: Usuario 5 actualizó película: probaaaaaaa (ID: 14)
+[13-Jun-2025 08:26:57 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 08:26:57 Europe/Madrid] CineFan [INFO]: Listando películas - Usuario: 5, Página: 1
+[13-Jun-2025 08:26:57 Europe/Madrid] CineFan [INFO]: Películas listadas exitosamente - Usuario: 5, Total: 14
+[13-Jun-2025 08:27:04 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 08:27:19 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 08:27:19 Europe/Madrid] CineFan [INFO]: Listando películas - Usuario: 5, Página: 1
+[13-Jun-2025 08:27:19 Europe/Madrid] CineFan [INFO]: Películas listadas exitosamente - Usuario: 5, Total: 14
+[13-Jun-2025 08:27:26 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 08:27:26 Europe/Madrid] CineFan [INFO]: Usuario 5 actualizó reseña 16 de película: John Wick: Chapter 4
+[13-Jun-2025 08:27:26 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 08:27:40 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 08:27:40 Europe/Madrid] CineFan [INFO]: Usuario autenticado: ID=5
+[13-Jun-2025 08:27:40 Europe/Madrid] CineFan [DEBUG]: Método HTTP: DELETE
+[13-Jun-2025 08:27:40 Europe/Madrid] CineFan [DEBUG]: GET params: []
+[13-Jun-2025 08:27:40 Europe/Madrid] CineFan [DEBUG]: POST params: []
+[13-Jun-2025 08:27:40 Europe/Madrid] CineFan [DEBUG]: Raw input: vacío
+[13-Jun-2025 08:27:40 Europe/Madrid] CineFan [ERROR]: ERROR: ID de reseña no válido. Debug: {"method":"DELETE","get":[],"post":[],"path_info":null,"raw_body":"","content_type":"application\/json","content_length":"0"}
+[13-Jun-2025 08:27:40 Europe/Madrid] CineFan [ERROR]: API Error [400]: ID de reseña requerido. Recibido: null. Revisa que estés enviando el parámetro "id" correctamente.
+[13-Jun-2025 08:44:03 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 08:44:03 Europe/Madrid] CineFan [INFO]: Listando películas - Usuario: 5, Página: 1
+[13-Jun-2025 08:44:03 Europe/Madrid] CineFan [INFO]: Películas listadas exitosamente - Usuario: 5, Total: 14
+[13-Jun-2025 08:44:04 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 08:44:14 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 08:44:14 Europe/Madrid] CineFan [INFO]: Usuario autenticado: ID=5
+[13-Jun-2025 08:44:14 Europe/Madrid] CineFan [DEBUG]: Método HTTP: DELETE
+[13-Jun-2025 08:44:14 Europe/Madrid] CineFan [DEBUG]: GET params: {"id":"16"}
+[13-Jun-2025 08:44:14 Europe/Madrid] CineFan [DEBUG]: POST params: []
+[13-Jun-2025 08:44:14 Europe/Madrid] CineFan [DEBUG]: ID obtenido desde GET: 16
+[13-Jun-2025 08:44:14 Europe/Madrid] CineFan [INFO]: Procesando eliminación de reseña ID: 16 por usuario: 5
+[13-Jun-2025 08:44:14 Europe/Madrid] CineFan [DEBUG]: Verificando existencia y propiedad de reseña...
+[13-Jun-2025 08:44:14 Europe/Madrid] CineFan [ERROR]: Error verificando columna fecha_eliminacion en tabla resenas: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '?' at line 1
+[13-Jun-2025 08:44:14 Europe/Madrid] CineFan [DEBUG]: Tabla resenas tiene columna fecha_eliminacion: NO
+[13-Jun-2025 08:44:14 Europe/Madrid] CineFan [DEBUG]: Resultado consulta reseña: {"id":16,"id_usuario":5,"activo":1,"pelicula_titulo":"John Wick: Chapter 4"}
+[13-Jun-2025 08:44:14 Europe/Madrid] CineFan [INFO]: Reseña verificada. Película: John Wick: Chapter 4
+[13-Jun-2025 08:44:14 Europe/Madrid] CineFan [DEBUG]: Ejecutando soft delete...
+[13-Jun-2025 08:44:14 Europe/Madrid] CineFan [WARNING]: Usando SQL sin fecha_eliminacion (columna no existe)
+[13-Jun-2025 08:44:14 Europe/Madrid] CineFan [DEBUG]: SQL delete: UPDATE resenas SET activo = 0 WHERE id = ? AND activo = 1
+[13-Jun-2025 08:44:14 Europe/Madrid] CineFan [DEBUG]: Parámetro: 16
+[13-Jun-2025 08:44:14 Europe/Madrid] CineFan [DEBUG]: Delete ejecutado. Filas afectadas: 1
+[13-Jun-2025 08:44:14 Europe/Madrid] CineFan [INFO]: Usuario 5 eliminó reseña 16 de película: John Wick: Chapter 4
+[13-Jun-2025 08:44:14 Europe/Madrid] CineFan [DEBUG]: Verificación eliminación: {"activo":0}
+[13-Jun-2025 08:44:21 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 08:44:39 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 08:44:39 Europe/Madrid] CineFan [INFO]: Iniciando carga de feed - Usuario: 5, Página: 1
+[13-Jun-2025 08:44:39 Europe/Madrid] CineFan [INFO]: Feed cargado exitosamente - Usuario: 5, Reseñas: 10
+[13-Jun-2025 08:48:51 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 08:48:51 Europe/Madrid] CineFan [INFO]: Listando películas - Usuario: 5, Página: 1
+[13-Jun-2025 08:48:51 Europe/Madrid] CineFan [INFO]: Películas listadas exitosamente - Usuario: 5, Total: 14
+[13-Jun-2025 08:48:54 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 08:49:05 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 08:49:11 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 08:49:11 Europe/Madrid] CineFan [INFO]: Iniciando carga de feed - Usuario: 5, Página: 1
+[13-Jun-2025 08:49:11 Europe/Madrid] CineFan [INFO]: Feed cargado exitosamente - Usuario: 5, Reseñas: 10
+[13-Jun-2025 08:49:18 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 08:49:18 Europe/Madrid] CineFan [INFO]: Listando películas - Usuario: 5, Página: 1
+[13-Jun-2025 08:49:18 Europe/Madrid] CineFan [INFO]: Películas listadas exitosamente - Usuario: 5, Total: 14
+[13-Jun-2025 08:49:32 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 09:43:07 Europe/Madrid] Error de conexión a la base de datos: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[13-Jun-2025 09:43:07 Europe/Madrid] CineFan [ERROR]: Error verificando usuario en token: Error de conexión a la base de datos: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[13-Jun-2025 09:43:10 Europe/Madrid] Error de conexión a la base de datos: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[13-Jun-2025 09:43:10 Europe/Madrid] CineFan [ERROR]: Error verificando usuario en token: Error de conexión a la base de datos: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[13-Jun-2025 09:43:35 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 09:43:35 Europe/Madrid] CineFan [INFO]: Listando películas - Usuario: 5, Página: 1
+[13-Jun-2025 09:43:35 Europe/Madrid] CineFan [INFO]: Películas listadas exitosamente - Usuario: 5, Total: 14
+[13-Jun-2025 09:43:36 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 09:43:43 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 09:43:43 Europe/Madrid] CineFan [INFO]: Listando películas - Usuario: 5, Página: 1
+[13-Jun-2025 09:43:43 Europe/Madrid] CineFan [INFO]: Películas listadas exitosamente - Usuario: 5, Total: 14
+[13-Jun-2025 09:44:00 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 09:44:06 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 09:44:06 Europe/Madrid] CineFan [INFO]: Usuario autenticado: ID=5
+[13-Jun-2025 09:44:06 Europe/Madrid] CineFan [DEBUG]: Input recibido: {"id":14,"titulo":"probaaaaaaaaaa","director":"probaaaa","ano_lanzamiento":2015,"duracion_minutos":100,"genero_id":1}
+[13-Jun-2025 09:44:06 Europe/Madrid] CineFan [INFO]: Procesando edición de película ID: 14
+[13-Jun-2025 09:44:06 Europe/Madrid] CineFan [DEBUG]: Campo a actualizar: titulo = 'probaaaaaaaaaa'
+[13-Jun-2025 09:44:06 Europe/Madrid] CineFan [DEBUG]: Campo a actualizar: director = 'probaaaa'
+[13-Jun-2025 09:44:06 Europe/Madrid] CineFan [DEBUG]: Campo a actualizar: ano_lanzamiento = '2015'
+[13-Jun-2025 09:44:06 Europe/Madrid] CineFan [DEBUG]: Campo a actualizar: genero_id = '1'
+[13-Jun-2025 09:44:06 Europe/Madrid] CineFan [DEBUG]: Campo a actualizar: duracion_minutos = '100'
+[13-Jun-2025 09:44:06 Europe/Madrid] CineFan [INFO]: Género válido: Acción
+[13-Jun-2025 09:44:06 Europe/Madrid] CineFan [DEBUG]: Agregando fecha_modificacion al UPDATE
+[13-Jun-2025 09:44:06 Europe/Madrid] CineFan [DEBUG]: SQL: UPDATE peliculas 
+                  SET titulo = ?, director = ?, ano_lanzamiento = ?, genero_id = ?, duracion_minutos = ?, fecha_modificacion = NOW()
+                  WHERE id = ?
+[13-Jun-2025 09:44:06 Europe/Madrid] CineFan [DEBUG]: Parámetros: ["probaaaaaaaaaa","probaaaa",2015,1,100,14]
+[13-Jun-2025 09:44:06 Europe/Madrid] CineFan [INFO]: Actualización exitosa. Filas afectadas: 1
+[13-Jun-2025 09:44:06 Europe/Madrid] CineFan [INFO]: Usuario 5 actualizó película: probaaaaaaaaaa (ID: 14)
+[13-Jun-2025 09:44:07 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 09:44:07 Europe/Madrid] CineFan [INFO]: Listando películas - Usuario: 5, Página: 1
+[13-Jun-2025 09:44:07 Europe/Madrid] CineFan [INFO]: Películas listadas exitosamente - Usuario: 5, Total: 14
+[13-Jun-2025 09:44:11 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 09:44:11 Europe/Madrid] CineFan [INFO]: Usuario autenticado: ID=5
+[13-Jun-2025 09:44:11 Europe/Madrid] CineFan [DEBUG]: Método HTTP: DELETE
+[13-Jun-2025 09:44:11 Europe/Madrid] CineFan [DEBUG]: GET params: {"id":"14"}
+[13-Jun-2025 09:44:11 Europe/Madrid] CineFan [DEBUG]: ID obtenido desde GET: 14
+[13-Jun-2025 09:44:11 Europe/Madrid] CineFan [INFO]: Procesando eliminación de película ID: 14 por usuario: 5
+[13-Jun-2025 09:44:11 Europe/Madrid] CineFan [DEBUG]: Verificando existencia y propiedad de película...
+[13-Jun-2025 09:44:11 Europe/Madrid] CineFan [DEBUG]: Resultado consulta película: {"id":14,"titulo":"probaaaaaaaaaa","id_usuario_creador":5}
+[13-Jun-2025 09:44:11 Europe/Madrid] CineFan [INFO]: Película verificada. Título: probaaaaaaaaaa
+[13-Jun-2025 09:44:11 Europe/Madrid] CineFan [DEBUG]: Ejecutando soft delete...
+[13-Jun-2025 09:44:11 Europe/Madrid] CineFan [DEBUG]: SQL delete: UPDATE peliculas SET activo = 0 WHERE id = ?
+[13-Jun-2025 09:44:11 Europe/Madrid] CineFan [DEBUG]: Parámetro: 14
+[13-Jun-2025 09:44:11 Europe/Madrid] CineFan [DEBUG]: Delete ejecutado. Filas afectadas: 1
+[13-Jun-2025 09:44:11 Europe/Madrid] CineFan [INFO]: Usuario 5 eliminó película: probaaaaaaaaaa (ID: 14)
+[13-Jun-2025 09:44:11 Europe/Madrid] CineFan [DEBUG]: Verificación eliminación: {"activo":0}
+[13-Jun-2025 09:44:15 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 09:44:18 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 09:44:30 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 09:44:30 Europe/Madrid] CineFan [INFO]: Iniciando carga de feed - Usuario: 5, Página: 1
+[13-Jun-2025 09:44:30 Europe/Madrid] CineFan [INFO]: Feed cargado exitosamente - Usuario: 5, Reseñas: 10
+[13-Jun-2025 10:12:08 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 10:12:08 Europe/Madrid] CineFan [INFO]: Iniciando carga de feed - Usuario: 5, Página: 1
+[13-Jun-2025 10:12:08 Europe/Madrid] CineFan [INFO]: Feed cargado exitosamente - Usuario: 5, Reseñas: 10
+[13-Jun-2025 10:12:30 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 10:12:32 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 10:12:32 Europe/Madrid] CineFan [INFO]: Iniciando carga de feed - Usuario: 9, Página: 1
+[13-Jun-2025 10:12:32 Europe/Madrid] CineFan [INFO]: Feed cargado exitosamente - Usuario: 9, Reseñas: 10
+[13-Jun-2025 10:12:34 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 10:12:34 Europe/Madrid] CineFan [INFO]: Listando películas - Usuario: 9, Página: 1
+[13-Jun-2025 10:12:34 Europe/Madrid] CineFan [INFO]: Películas listadas exitosamente - Usuario: 9, Total: 13
+[13-Jun-2025 10:12:49 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 10:58:58 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 10:58:58 Europe/Madrid] CineFan [INFO]: Iniciando carga de feed - Usuario: 5, Página: 1
+[13-Jun-2025 10:58:58 Europe/Madrid] CineFan [INFO]: Feed cargado exitosamente - Usuario: 5, Reseñas: 10
+[13-Jun-2025 10:58:59 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 10:58:59 Europe/Madrid] CineFan [INFO]: Iniciando carga de feed - Usuario: 5, Página: 2
+[13-Jun-2025 10:58:59 Europe/Madrid] CineFan [INFO]: Feed cargado exitosamente - Usuario: 5, Reseñas: 2
+[13-Jun-2025 10:59:02 Europe/Madrid] Conexión a base de datos establecida exitosamente
+[13-Jun-2025 10:59:02 Europe/Madrid] CineFan [INFO]: Listando películas - Usuario: 5, Página: 1
+[13-Jun-2025 10:59:02 Europe/Madrid] CineFan [INFO]: Películas listadas exitosamente - Usuario: 5, Total: 13
+[13-Jun-2025 10:59:04 Europe/Madrid] Conexión a base de datos establecida exitosamente

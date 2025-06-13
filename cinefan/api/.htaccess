@@ -1,0 +1,45 @@
+# Configuración para API CineFan
+RewriteEngine On
+
+# Headers de seguridad
+Header always set X-Content-Type-Options nosniff
+Header always set X-Frame-Options DENY
+Header always set X-XSS-Protection "1; mode=block"
+
+# CORS para desarrollo
+Header always set Access-Control-Allow-Origin "*"
+Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+
+# Manejar preflight requests
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ $1 [R=200,L]
+
+# Configuración de PHP
+php_value upload_max_filesize 10M
+php_value post_max_size 10M
+php_value max_execution_time 30
+php_value memory_limit 128M
+
+# Logging de errores
+php_flag log_errors on
+php_value error_log logs/cinefan_api.log
+
+# Prevenir acceso directo a archivos de configuración
+<Files "*.php">
+    Order Allow,Deny
+    Allow from all
+</Files>
+
+<Files "database.php">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+# Comprimir respuestas
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/javascript
+</IfModule>

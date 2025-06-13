@@ -1,0 +1,73 @@
+{
+    "name": "cinefan/backend",
+    "description": "Backend API y Panel Admin para CineFan - Red Social de Cine",
+    "type": "project",
+    "keywords": ["cinefan", "movies", "reviews", "social-network", "php", "api"],
+    "authors": [
+        {
+            "name": "Juan y Angel",
+            "email": "juanangel@cinefan.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.4",
+        "tecnickcom/tcpdf": "^6.6",
+        "firebase/php-jwt": "^6.8"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "CineFan\\": "api/src/",
+            "CineFanAdmin\\": "admin/src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "CineFan\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "vendor-dir": "vendor",
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "scripts": {
+        "install-tcpdf": [
+            "@composer require tecnickcom/tcpdf",
+            "echo 'TCPDF instalado correctamente para generación de PDFs'"
+        ],
+        "test": "phpunit",
+        "post-install-cmd": [
+            "echo 'CineFan Backend instalado correctamente'",
+            "echo 'Recuerda configurar la base de datos en api/config/database.php'",
+            "echo 'Para usar PDFs, asegurate de que TCPDF esté instalado'"
+        ],
+        "post-update-cmd": [
+            "echo 'Dependencias actualizadas correctamente'"
+        ]
+    },
+    "extra": {
+        "cinefan": {
+            "version": "1.0.0",
+            "requirements": {
+                "php": ">=7.4",
+                "mysql": ">=8.0",
+                "apache": ">=2.4"
+            },
+            "features": [
+                "API RESTful completa",
+                "Panel de administración web",
+                "Generación de PDFs con TCPDF",
+                "Autenticación JWT",
+                "Sistema de favoritos y seguimientos",
+                "Búsqueda avanzada",
+                "Estadísticas completas"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
