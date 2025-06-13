@@ -125,6 +125,29 @@ class EjecutorPruebas {
         echo "</div>";
     }
     
+    public function ejecutarPruebasCompatibilidad() {
+        echo "<div class='card mb-4'>";
+        echo "<div class='card-header bg-secondary text-white'>";
+        echo "<h3><i class='fas fa-globe'></i> Pruebas de Compatibilidad</h3>";
+        echo "</div>";
+        echo "<div class='card-body'>";
+        
+        try {
+            $pruebasComp = new PruebaCompatibilidadNavegadores();
+            $resultados = $pruebasComp->ejecutarPruebasCompatibilidad();
+            $this->procesarResultados($resultados, 'Compatibilidad');
+            
+            // Mostrar reporte adicional
+            echo $pruebasComp->generarReporteCompatibilidad();
+            
+        } catch (Exception $e) {
+            $this->mostrarError('Pruebas Compatibilidad', $e->getMessage());
+        }
+        
+        echo "</div>";
+        echo "</div>";
+    }
+
     // procesar resultados de pruebas
     private function procesarResultados($resultados, $categoria) {
         echo "<div class='row'>";
